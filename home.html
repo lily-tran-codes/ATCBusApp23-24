@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Buses Schedule</title>
+        <link rel="stylesheet" href="/home.css">
+        <script src="/home.js"></script>
+    </head>
+    <body onload="getSchedule();">
+        <div class="topBar">
+            <input id="searchBar" type="search" placeholder="Search for bus...">
+        </div>
+        <h1 id="scheduleDate" style="text-align:center; margin-bottom: 0px;"></h1>
+        <div class="busesDiv">
+            <h1>Outside Buses</h1>
+            <div class="buses" id="OutsideBuses" name="Outside">
+                <div class="section 1">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Drive</div>
+                <div class="section 2">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Stop Sign</div>
+                <div class="section 3">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Walk</div>
+                <div class="section 4">
+                    <!--Bus divs go here-->
+                </div>
+            </div>
+        </div>
+        <div class="busesDiv">
+            <h1>Inside Buses</h1>
+                <div class="buses" id="InsideBuses" name="Inside">
+                    <div class="section 1">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Drive</div>
+                    <div class="section 2">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Stop Sign</div>
+                    <div class="section 3">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Walk</div>
+                    <div class="section 4">
+                        <!--Bus divs go here-->
+                    </div>
+                </div>
+        </div>
+        <div class="busesDiv" name="NHY">
+            <h1>NHY</h1>
+            <div class="buses section 0" id="NHYBuses">
+                <!--bus divs go here-->
+            </div>
+        </div>
+        <div class="busesDiv" id="BusChanges" name="Changes">
+            <h1>Changes</h1>
+            <div class="changes">
+                <p id="changesNotes" style="font-family:monospace;"></p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    ports:
+    - '5000:443'
+    image: lily108/busapp:1.1
+    env_file:
+      - .env

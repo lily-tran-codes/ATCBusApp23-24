@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bus Dismissal</title>
+        <link rel="stylesheet" href="admin.css">
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+        <script src="admin.js"></script>
+        <script src="sidebar.js"></script>
+        </head>
+        <!-- <script src="buses.js"></script> -->
+    <body onload="createDragDrop();">
+        <div class="topBar">
+            <span id="menuBtn" onclick="openNav()">&#9776;</span>
+            <div id="sideBar">
+                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
+                <a href="/admin" class="activePage">Schedules</a>
+                <a href="admin/buses">Buses List</a>
+                <a href="/admin/account">Account</a>
+                <a href="/">Student View</a>
+            </div>
+            
+            <div id="datetime">
+                <input type="date" id="datePicker">
+                <p>Release Time:</p>
+                <input type="time" id="timePicker" disabled>
+            </div>
+            
+            <br><button id="editingButton">Enable Editing</button>
+            <button class="saveButton">Save</button>
+            <p id="saveStatus"></p>
+        </div>
+        <!--where unscheduled buses go-->
+        <div class="busesDiv" id="busesHolder">
+            <h1>Buses</h1>
+            <div class="holder section" id="busesHolderSort">
+                <!--bus routes go here-->
+            </div>
+        </div>
+        <div class="busesDiv" id="OutsideBuses">
+            <h1>Outside Buses</h1>
+            <div class="buses" id="OutsideSort" name="Outside">
+                <div class="section 1">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Drive</div>
+                <div class="section 2">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Stop Sign</div>
+                <div class="section 3">
+                    <!--Bus divs go here-->
+                </div>
+                <div class="divider">Walk</div>
+                <div class="section 4">
+                    <!--Bus divs go here-->
+                </div>
+            </div>
+        </div>
+        <div class="busesDiv" id="InsideBuses">
+            <h1>Inside Buses</h1>
+                <div class="buses" id="InsideSort" name="Inside">
+                    <div class="section 1">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Drive</div>
+                    <div class="section 2">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Stop Sign</div>
+                    <div class="section 3">
+                        <!--Bus divs go here-->
+                    </div>
+                    <div class="divider">Walk</div>
+                    <div class="section 4">
+                        <!--Bus divs go here-->
+                    </div>
+                </div>
+        </div>
+        <div class="busesDiv" id="NHYChanges" style="padding:0;">
+            <div class="busesDiv" id="NHYBuses" name="NHY" style="padding:0;">
+                <h1>NHY</h1>
+                <div class="buses section 0" id="NHYSort">
+                    <!--bus divs go here-->
+                </div>
+            </div>
+            <h2 style="margin-top:30px;margin-bottom:0px;">Notes</h2>
+            <textarea disabled id="notes" rows="4" cols="150" style="max-width:100%; min-width:100%; min-height:50px;" placeholder="Enter bus changes and notes"></textarea>
+        </div>
+        <!-- <script>createDragDrop();</script> -->
+    </body>
+</html>

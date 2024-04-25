@@ -1,0 +1,7 @@
+Nodejs
+- npm install express
+- npm install express-validator
+- npm install dotenv
+- npm install bcrypt
+JS
+- cdn SortableJS

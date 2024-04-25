@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Buses</title>
+        <script src="/buses.js"></script>
+        <script src="/sidebar.js"></script>
+        <link rel="stylesheet" href="/admin.css">
+    </head>
+    <body onload="readDb()">
+        <div class="topBar">
+            <span id="menuBtn" onclick="openNav()">&#9776;</span>
+            <div id="sideBar">
+                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
+                <a href="/admin">Schedules</a>
+                <a href="/admin/buses" class="activePage">Buses List</a>
+                <a href="/admin/account">Account</a>
+                <a href="/">Student View</a>
+            </div>
+        </div>
+        <p id="lastUpdated">Last Updated: </p>
+        <p id="total">Total: </p>
+        <div id="busList">
+            <h1>Buses</h1>
+            <table id="busTable">
+                <!--Bus routes go here-->
+            </table>
+        </div>
+        <br>
+        <div id="newBus">
+            <input type="text" placeholder="Enter bus route" id="addBusInput">
+            <button id="addButton">Add Bus</button><br>
+            <button id="newListButton">New Bus List</button>
+        </div>
+    </body>
+</html>

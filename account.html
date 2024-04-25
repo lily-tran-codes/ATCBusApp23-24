@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin Accounts</title>
+        <link rel="stylesheet" href="/admin.css">
+        <script src="/sidebar.js"></script>
+        <script src="/account.js"></script>
+    </head>
+    <body>
+        <div class="topBar">
+            <span id="menuBtn" onclick="openNav()">&#9776;</span>
+            <div id="sideBar">
+                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
+                <a href="/admin">Schedules</a>
+                <a href="/admin/buses">Buses List</a>
+                <a href="/admin/account" class="activePage">Admins</a>
+                <a href="/">Student View</a>
+            </div>
+        </div>
+        <h1>Account</h1>
+        <table id="accountsTable">
+            <tr>
+                <td class="rowName"><b>Username</b></td>
+                <td id="usernameField"></td>
+                <td><button id="usernameBtn" name="username" onclick="modifyAccount(this);">Change username</button></td>
+            </tr>
+            <tr>
+                <td class="rowName"><b>Password</b></td>
+                <td id="passwordField"></td>
+                <td><button id="passwordBtn" name="password" onclick="modifyAccount(this);">Change password</button></td>
+            </tr>
+        </table>
+        <form id="newPasswordForm" class="hidden">
+            <h4><label>Old Password</label></h4>
+            <input type="password">
+            <h4><label>New Password</label></h4>
+            <input type="password">
+            <h4><label>Re-type new password</label></h4>
+            <input type="password">
+        </form>
+    </body>
+</html>

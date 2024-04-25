@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin Register</title>
+        <link rel="stylesheet" href="admin.css">
+        </head>
+    </head>
+    <body id="loginBody">
+        <div id="loginDiv">
+            <h2 style="margin: auto;">Register</h2>
+            <form id="loginForm" method="post" action="/admin">
+                <h3>Employee number</h3>
+                <input type="text" name="empNum" required>
+                <h3>Username</h3>
+                <input type="text" id="usernameInput" name="username" required>
+                <h3><label for="usernameInput">Password</label></h3>
+                <input type="password" id="passwordInput" name="password" required>
+                <div style="margin: 0px; padding: 0px; width: 100%; text-align: center;">
+                    <input type="submit" value="Submit" for="loginForm" class="submitButton">
+                </div>
+            </form>
+        </div>
+        <p>Login <a href="/login">here</a></p>
+    </body>
+    <script>
+    </script>
+</html>

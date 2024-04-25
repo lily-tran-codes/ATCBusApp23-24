@@ -1,0 +1,99 @@
+/*
+When updating CSS, refresh the page with ctrl + F5 to clear cache
+if no changes are reflected on the page!
+*/
+
+/*div containing divs for bus lists*/
+.bus-block{
+    padding: 10px;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+}
+/*div containing bus numbers*/
+.busesDiv{
+    display: inline-block;
+    margin: 10px;
+    vertical-align: top;
+    text-align: center;
+    padding: 10px;
+    width: 20%;
+    font-size: 20px;
+}
+.list {
+    text-align: center;
+}
+ul {
+    text-align: left;
+    display: inline-block;
+    padding-left: 10%;
+}
+.divider {
+    width: 100%;
+    display: flex;
+    color: red;
+    align-items: center;
+    flex: 1;
+    margin: 10px auto;
+}
+.divider:after {
+    content: '';
+    height: 1px;
+    background: red;
+    flex: 1;
+    margin-left: 10px;
+}
+.divider:before{
+    content: '';
+    height: 1px;
+    background: red;
+    flex: 1;
+    margin-right: 10px; 
+}
+.topBar{
+    text-align:right;
+}
+input{
+    border: 1px solid gray;
+    border-radius: 5px;
+    font-size: 15px;
+}
+input[type='search']{
+    background: transparent url('icons/searchIcon.png') no-repeat;
+}
+.bus{
+    padding: 5px;
+}
+@media only screen and (max-device-width: 800px){
+    input{
+        font-size: 50px;
+        border-radius: 10px;
+        border: 1px solid gray;
+        margin: 20px;
+    }
+    .topBar{
+        text-align: center;
+    }
+    h1{
+        font-size: 100px;
+    }
+    .busesDiv{
+        font-size: 70px;
+        display: block;
+        width: 90%;
+        padding: 50px;
+    }
+    .bus{
+        margin: 15px;
+    }
+  }
+@media only screen and (max-width: 800px){
+    .busesDiv{
+        display: block;
+        width: 90%;
+        padding: 50px;
+    }
+    .bus{
+        font-size: 30px;
+    }
+}
