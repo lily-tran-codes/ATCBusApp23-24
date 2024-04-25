@@ -15,7 +15,7 @@
 ## Setup
 1. Open Sql Server Configuration Manager
 2. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
-![Enable SQL Server Browser](enable-sql-browser.png)
+![Enable SQL Server Browser](Documentation/enable-sql-browser.png)
 3. Right-click SQL Server Browser and select Start
 4. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
 5. Right-click and enable TCP/IP

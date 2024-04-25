@@ -49,7 +49,7 @@ function displayBuses(buses){
             writeDb(bus, 'archive');
             location.reload();
         } else {
-            console.log("no")
+            console.log("no");
         }
     })
 }
