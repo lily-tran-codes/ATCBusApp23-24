@@ -4,39 +4,39 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 // db config for local development
+// const adminConfig = {
+//     server: '10.19.201.210\\SQLEXPRESS',
+//     database: 'BusDismissal',
+//     user: process.env.LOCAL_ADMIN_USERNAME,
+//     password: process.env.LOCAL_ADMIN_PASSWORD,
+//     port: 1433,
+//     trustServerCertificate: true
+// };
+// const studentConfig = {
+//     server: '10.19.201.210\\SQLEXPRESS',
+//     database: 'BusDismissal',
+//     user: process.env.LOCAL_STUDENT_USERNAME,
+//     password: process.env.LOCAL_STUDENT_PASSWORD,
+//     port: 1433,
+//     trustServerCertificate: true
+// }
+// db config for school server
 const adminConfig = {
-    server: '10.19.201.210\\SQLEXPRESS',
+    server: 'techpinnvs2.browardschools.local\\sql1', // !IMPORTANT: for every backslash (\), be sure to change to 2 backward slashes (\\) as backward slash is an escape character in JS
     database: 'BusDismissal',
-    user: process.env.LOCAL_ADMIN_USERNAME,
-    password: process.env.LOCAL_ADMIN_PASSWORD,
-    port: 1433,
-    trustServerCertificate: true
-};
-const studentConfig = {
-    server: '10.19.201.210\\SQLEXPRESS',
-    database: 'BusDismissal',
-    user: process.env.LOCAL_STUDENT_USERNAME,
-    password: process.env.LOCAL_STUDENT_PASSWORD,
+    user: process.env.ADMIN_USERNAME,
+    password: process.env.ADMIN_PASSWORD,
     port: 1433,
     trustServerCertificate: true
 }
-// db config for school server
-// const adminConfig = {
-//     server: 'techpinnvs2.browardschools.local\\sql1', // !IMPORTANT: for every backslash (\), be sure to change to 2 backward slashes (\\) as backward slash is an escape character in JS
-//     database: 'BusDismissal',
-//     user: process.env.ADMIN_USERNAME,
-//     password: process.env.ADMIN_PASSWORD,
-//     port: 1433,
-//     trustServerCertificate: true
-// }
-// const studentConfig = {
-//     server: 'techpinnvs2.browardschools.local\\sql1',
-//     database: 'BusDismissal',
-//     user: process.env.STUDENT_USERNAME,
-//     password: process.env.STUDENT_PASSWORD,
-//     port: 1433,
-//     trustServerCertificate: true
-// }
+const studentConfig = {
+    server: 'techpinnvs2.browardschools.local\\sql1',
+    database: 'BusDismissal',
+    user: process.env.STUDENT_USERNAME,
+    password: process.env.STUDENT_PASSWORD,
+    port: 1433,
+    trustServerCertificate: true
+};
 
 async function getSchedule(date){
     try{

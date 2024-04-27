@@ -1,8 +1,9 @@
+version: '1.2'
 services:
   web:
     build: .
     ports:
-    - '5000:443'
-    image: lily108/busapp:1.1
+    - ${PORTS}
+    image: lily108/busapp:1.2
     env_file:
       - .env

@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
 
 const app = express();
-const port = 443;
+const port = process.env.PORT;
 const db = require('./db');
 
 // set server to port
