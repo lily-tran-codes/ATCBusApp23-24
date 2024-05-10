@@ -2,6 +2,56 @@
 - Nodejs
 - npm
 - SQL Server
+# Install bus app on server with Docker
+## Section 1: Database
+>[!NOTE]
+>Create a table called Accounts (drop table first if Accounts already exists) with username and password columns with the script below:
+```sql
+USE [BusDismissal]
+GO
+
+/****** Object:  Table [dbo].[Accounts]    Script Date: 4/23/2024 5:45:35 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+/* Uncomment the DROP TABLE below if Accounts already exist */
+/* DROP TABLE Accounts; */
+CREATE TABLE [dbo].[Accounts](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[username] [varchar](255) NULL,
+	[password] [varchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+```
+## Section 2: Required files
+1. [compose.yaml](compose.yaml)
+2. .env file (from email)
+3. Put them in a folder together
+## Section 3: Docker
+1. Launch Docker Desktop app on computer to make sure it's running
+2. Launch Cmd Prompt and navigate to where the folder from Section 2 Step 3 is located
+3. Type in:
+```batch
+docker-compose pull
+```
+1. Enter to let it pull from the Docker Hub
+2. Once it's done pulling and 'Pull complete' is displayed, run this to start the app:
+```batch
+docker-compose up
+```
+1. Verify 'Server listening on PORT 80' is displayed on terminal
+2. Navigate to localhost:80/admin from the browser to get to the Admin page of the app
+3. Default login:
+        username: busAdmin
+        password: busAdmin
+4. Change credentials after logging in by going to the Accounts tab on the navigation bar up top.
+![Account](Documentation/account.png)
 # Setting up local SQL server for development
 >[!NOTE]
 > Local admin rights required on computer in order to install SQL server
@@ -16,12 +66,12 @@
 1. Open Sql Server Configuration Manager
 2. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
 ![Enable SQL Server Browser](Documentation/enable-sql-browser.png)
-3. Right-click SQL Server Browser and select Start
-4. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
-5. Right-click and enable TCP/IP
-6. Navigate to SQL Server Services and restart SQL Server that is currently running
-7. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
-8. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+1. Right-click SQL Server Browser and select Start
+2. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
+3. Right-click and enable TCP/IP
+4. Navigate to SQL Server Services and restart SQL Server that is currently running
+5. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
+6. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
 # Setting up Node.js
 1. Install nvm
     - [Windows Installer](https://github.com/coreybutler/nvm-windows/releases)
