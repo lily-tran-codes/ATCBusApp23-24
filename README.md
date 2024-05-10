@@ -30,7 +30,7 @@ PRIMARY KEY CLUSTERED
 GO
 ```
 ## Section 2: Required files
-1. [compose.yaml](compose.yaml)
+1. Download [compose.yaml](compose.yaml)
 2. .env file (from email)
 3. Put them in a folder together
 ## Section 3: Docker
