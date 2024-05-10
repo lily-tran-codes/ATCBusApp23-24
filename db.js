@@ -1,28 +1,12 @@
 const sql = require('mssql');
 // require('dotenv').config();
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 require('dotenv').config();
 
-// db config for local development
-// const adminConfig = {
-//     server: '10.19.201.210\\SQLEXPRESS',
-//     database: 'BusDismissal',
-//     user: process.env.LOCAL_ADMIN_USERNAME,
-//     password: process.env.LOCAL_ADMIN_PASSWORD,
-//     port: 1433,
-//     trustServerCertificate: true
-// };
-// const studentConfig = {
-//     server: '10.19.201.210\\SQLEXPRESS',
-//     database: 'BusDismissal',
-//     user: process.env.LOCAL_STUDENT_USERNAME,
-//     password: process.env.LOCAL_STUDENT_PASSWORD,
-//     port: 1433,
-//     trustServerCertificate: true
-// }
-// db config for school server
+// database configuration
 const adminConfig = {
-    server: 'techpinnvs2.browardschools.local\\sql1', // !IMPORTANT: for every backslash (\), be sure to change to 2 backward slashes (\\) as backward slash is an escape character in JS
+    server: process.env.SERVER, // !IMPORTANT: for every backslash (\), be sure to change to 2 backward slashes (\\) as backward slash is an escape character in JS
     database: 'BusDismissal',
     user: process.env.ADMIN_USERNAME,
     password: process.env.ADMIN_PASSWORD,
@@ -30,13 +14,48 @@ const adminConfig = {
     trustServerCertificate: true
 }
 const studentConfig = {
-    server: 'techpinnvs2.browardschools.local\\sql1',
+    server: process.env.SERVER,
     database: 'BusDismissal',
     user: process.env.STUDENT_USERNAME,
     password: process.env.STUDENT_PASSWORD,
     port: 1433,
     trustServerCertificate: true
 };
+// encryption middleware class
+class Middleware{
+    // create secret key on initialization of object
+    constructor(){
+        this.secretKey = process.env.SECRET_KEY; // key length is dependent on algorithm (aes256 uses 32 bytes)
+    }
+
+    encrypt(data) {
+        console.log(process.env.SECRET_KEY.length);
+        // generate 16-byte initialization vector (IV)
+        const iv = crypto.randomBytes(16);
+        // create cipher
+        const cipher = crypto.createCipheriv("aes-256-cbc", this.secretKey, iv);
+        // update cipher with data to encrypt, encode as hex
+        var encrypted = cipher.update(data, "utf8", "hex");
+        // finalize encryption
+        encrypted += cipher.final("hex");
+        // return object with IV and encrypted data
+        return {iv: iv.toString("hex"), encrypted};
+    }
+
+    decrypt(data){
+        console.log("data:");
+        console.log(data);
+        // create decipher
+        const decipher = crypto.createDecipheriv("aes-256-cbc", this.secretKey, Buffer.from(data.iv, "hex"));
+        // update cipher with encrypted data
+        let decryptedData = decipher.update(data.encrypted, "hex", "utf-8");
+        // finalize decryption
+        decryptedData += decipher.final("utf-8");
+        return decryptedData;
+    }
+}
+
+const middleware = new Middleware();
 
 async function getSchedule(date){
     try{
@@ -246,19 +265,34 @@ async function updateSchedule(buses, date){
    }
 }
 // function to login user
-async function login(username, pw){
+async function login(creds){
     try{
         // create connection pool to db
         var conn = new sql.ConnectionPool(adminConfig);
         var req = new sql.Request(conn);
         // connect to db
         const db = await conn.connect();
-        // generate salt and hash password (salt is used to attach random string to hashed password)
-        const hash = await bcrypt.hash(pw, 10);
-        console.log(hash);
         // query results from db
-        // const res = await req.query(`USE BusDismissal; INSERT INTO users(username, password) VALUES(${username}, ${hash});`);
-        
+        console.log("server logging in")
+        console.log(creds);
+        var accounts = await req.query(`USE BusDismissal; SELECT * FROM Accounts;`);
+        if(accounts.recordset.length == 0){
+            console.log('no accounts');
+            return creds.username == process.env.DEFAULT_ADMIN_LOGIN_NAME && creds.password == process.env.DEFAULT_ADMIN_LOGIN_PASS ? true : false
+        } else {
+            console.log('accounts found');
+            accounts = await req.query(`USE BusDismissal; SELECT * FROM Accounts WHERE username = '${creds.username}'`);
+            if(accounts.recordset.length == 0)
+                return false;
+            try{
+                const valid = await bcrypt.compare(creds.password, accounts.recordset[0].password);
+                console.log("passwords match: " + valid);
+                if(valid)
+                    return true;
+            } catch {
+                return false;
+            }
+        }        
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -310,7 +344,7 @@ async function getStudentSchedule(date){
         WHERE sb.bus_id = b.id \
         AND sb.schedule_date = '${date}';`)
         console.log(schedule.recordset);
-        const notes = await req.query(`USE BusDismissal; SELECT notes FROM Schedules WHERE schedule_date='${date}'`);
+        const notes = await req.query(`USE BusDismissal; SELECT notes FROM Schedules WHERE schedule_date='${date}';`);
         return {schedule : schedule.recordset, notes : notes.recordset}
    } catch (err) {
        // handles errors
@@ -325,13 +359,20 @@ async function getStudentSchedule(date){
 async function getAccount(){
     try{
         // create connection pool to db
-        var conn = new sql.ConnectionPool(studentConfig);
+        var conn = new sql.ConnectionPool(adminConfig);
         var req = new sql.Request(conn);
+        var pw = '';
         // connect to db
         const db = await conn.connect();
-        const account = await req.query(`USE BusDismissal; SELECT username, password FROM Accounts WHERE active=1`);
+        const account = await req.query(`USE BusDismissal; SELECT username, password FROM Accounts;`);
+        console.log("account from database: ");
         console.log(account.recordset);
-        return account.recordset
+        if(account.recordset.length == 0){
+            console.log("no accounts");
+            return {username : process.env.DEFAULT_ADMIN_LOGIN_NAME, password : process.env.DEFAULT_ADMIN_LOGIN_PASS};
+        } else {
+            return {username : account.recordset[0].username, password : account.recordset[0].password};
+        }
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -341,4 +382,81 @@ async function getAccount(){
    }
 }
 
-module.exports = { getSchedule, getBuses, addBus, deleteBus, editBus, archiveList, updateSchedule, login, writeSchedule, getStudentSchedule, getAccount}
+// function to change password
+async function changePassword(newValue, oldValue){
+        try{
+            // create connection pool to db
+            var conn = new sql.ConnectionPool(adminConfig);
+            var req = new sql.Request(conn);
+            var pw = '';
+            // connect to db
+            const db = await conn.connect();
+            // check if old passwords match
+            const oldPw = await req.query(' USE BusDismissal; SELECT password FROM accounts');
+            console.log(oldValue);
+            // check if account exists in database
+            if(oldPw.recordset.length > 0){
+                // compare old password entered and the hashed password from the database
+                var valid = await bcrypt.compare(oldValue, oldPw.recordset[0].password);
+                // if old passwords don't match return false
+                if(!valid){
+                    return false;
+                } else {
+                    // hash password
+                    var hashPw = await bcrypt.hash(newValue, 10);
+                    // change password in database
+                    await req.query(`USE BusDismissal; UPDATE Accounts SET password = '${hashPw}'`);
+                    console.log('password updated');
+                }
+            // if account doesn't exist   
+            } else {
+                // check if old password entered matches default admin password
+                if(oldValue != process.env.DEFAULT_ADMIN_LOGIN_PASS){
+                    return false;
+                } else {
+                    // hash password
+                    var hashPw = await bcrypt.hash(newValue, 10);
+                    // create new account in db
+                    await req.query(`USE BusDismissal; INSERT INTO Accounts(username, password) VALUES('${process.env.DEFAULT_ADMIN_LOGIN_NAME}', '${hashPw}')`);
+                    console.log('new account with new password created');
+                }
+            }
+            return true;
+       } catch (err) {
+           // handles errors
+           console.log("An error has occured: ", err);
+       } finally {
+           // close connection to db
+           conn.close();
+       }
+}
+
+// function to change account's credentials
+async function changeUsername(newValue){
+    try{
+        // create connection pool to db
+        var conn = new sql.ConnectionPool(adminConfig);
+        var req = new sql.Request(conn);
+        // connect to db
+        const db = await conn.connect();
+        var query = '';
+        console.log(query);
+        const accounts = await req.query(`USE BusDismissal; SELECT * FROM Accounts;`);
+        console.log(newValue);
+        if(accounts.recordset.length == 0){
+                console.log('insert new row')
+                const hashedPw = await bcrypt.hash(process.env.DEFAULT_ADMIN_LOGIN_PASS, 10);
+                query = `INSERT INTO Accounts(username, password) VALUES('${newValue}', '${hashedPw}')`;
+        } else {
+            query = `USE BusDismissal; UPDATE Accounts SET username = '${newValue}';`;
+        }
+        await req.query(query);
+   } catch (err) {
+       // handles errors
+       console.log("An error has occured: ", err);
+   } finally {
+       // close connection to db
+       conn.close();
+   }
+}
+module.exports = { getSchedule, getBuses, addBus, deleteBus, editBus, archiveList, updateSchedule, login, writeSchedule, getStudentSchedule, getAccount, changeUsername, changePassword }

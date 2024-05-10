@@ -3,19 +3,14 @@
     <head>
         <title>Admin Accounts</title>
         <link rel="stylesheet" href="/admin.css">
-        <script src="/sidebar.js"></script>
         <script src="/account.js"></script>
     </head>
     <body>
-        <div class="topBar">
-            <span id="menuBtn" onclick="openNav()">&#9776;</span>
-            <div id="sideBar">
-                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
-                <a href="/admin">Schedules</a>
-                <a href="/admin/buses">Buses List</a>
-                <a href="/admin/account" class="activePage">Admins</a>
-                <a href="/">Student View</a>
-            </div>
+        <div class="topnav">
+            <a href="/admin">Schedules</a>
+            <a href="/admin/buses">Buses</a>
+            <a class="active" href="/admin/account">Account</a>
+            <a href="/">Student View</a>
         </div>
         <h1>Account</h1>
         <table id="accountsTable">
@@ -32,11 +27,13 @@
         </table>
         <form id="newPasswordForm" class="hidden">
             <h4><label>Old Password</label></h4>
-            <input type="password">
+            <input required type="password" id="oldPassword">
             <h4><label>New Password</label></h4>
-            <input type="password">
+            <input required type="password" id="newPassword">
             <h4><label>Re-type new password</label></h4>
-            <input type="password">
+            <input required type="password" id="retypePassword">
+            <p style="color:rgb(175, 0, 0);" id="notif"></p>
+            <button id="submitPw" name="password" type="submit">Submit</button>
         </form>
     </body>
 </html>

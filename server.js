@@ -32,6 +32,7 @@ app.use(session({
         maxAge: 1*60*60*1000
     }
 }))
+
 // serve HTML page (GET)
 app.get('/admin', (req, res) => {
     if(req.session.username == null){
@@ -44,16 +45,17 @@ app.get('/login', (req, res) => {
     res.sendFile("login.html", {root:__dirname});
 })
 app.post('/login', (req, res) => {
-    if(req.body.username == process.env.ADMIN_LOGIN_NAME && req.body.password == process.env.ADMIN_LOGIN_PASS){
-        console.log('login success!');
-        req.session.username = req.body.username;
-        res.redirect('/admin');
-        res.end(); // end request (!important page will load for a long time without this)
-    } else {
-        for(var i = 0; i < 5; i++){
-            res.send('Login failed.');
+    db.login(req.body).then(valid => {
+        console.log(valid);
+        if(valid){
+            console.log('login success!');
+            req.session.username = req.body.username;
+            res.redirect('/admin');
+            res.end(); // end request (!important page will load for a long time without this)
+        } else {
+            res.send("login failed.");
         }
-    }
+    });
 })
 app.get('/db', (req, res) => {
     var table = req.query.table;
@@ -105,14 +107,21 @@ app.get('/', (req, res) => {
     res.sendFile("home.html", {root:__dirname})
 })
 app.get('/accountdb', (req, res) => {
-    // db.getAccount().then(account => res.json(account));
-    res.json([{username:process.env.ADMIN_LOGIN_NAME, password:process.env.ADMIN_LOGIN_PASS}])
+    db.getAccount().then(account => res.json(account))
 })
-// app.post('/userlogin', (req, res) => {
-//     const username = req.body.username;
-//     const password = req.body.password;
-    // validate login data
-//     console.log("login info:");
-//     console.log(username);
-//     console.log(password);
-// })
+app.post('/accountdb', (req, res) => {
+    // change credentials for account
+    if(req.body.type == 'password'){
+        db.changePassword(req.body.newValue, req.body.oldValue).then(valid => {
+            console.log(valid);
+            if(!valid){
+                res.json({status: 'failed'});
+            } else {
+                res.json({status: 'success'});
+            }
+        });
+    } else {
+        db.changeUsername(req.body.newValue);
+        res.json({status: 'success'});
+    }
+})

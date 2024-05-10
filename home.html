@@ -6,12 +6,13 @@
         <script src="/home.js"></script>
     </head>
     <body onload="getSchedule();">
-        <div class="topBar">
-            <input id="searchBar" type="search" placeholder="Search for bus...">
+        <div class="topnav">
+            <a class="active" href="/">Home</a>
+            <input id="searchBar" type="text" placeholder="Search..">
         </div>
         <h1 id="scheduleDate" style="text-align:center; margin-bottom: 0px;"></h1>
         <div class="busesDiv">
-            <h1>Outside Buses</h1>
+            <h1><u>Outside Buses</u></h1>
             <div class="buses" id="OutsideBuses" name="Outside">
                 <div class="section 1">
                     <!--Bus divs go here-->
@@ -31,7 +32,7 @@
             </div>
         </div>
         <div class="busesDiv">
-            <h1>Inside Buses</h1>
+            <h1><u>Inside Buses</u></h1>
                 <div class="buses" id="InsideBuses" name="Inside">
                     <div class="section 1">
                         <!--Bus divs go here-->
@@ -51,13 +52,13 @@
                 </div>
         </div>
         <div class="busesDiv" name="NHY">
-            <h1>NHY</h1>
+            <h1><u>NHY</u></h1>
             <div class="buses section 0" id="NHYBuses">
                 <!--bus divs go here-->
             </div>
         </div>
         <div class="busesDiv" id="BusChanges" name="Changes">
-            <h1>Changes</h1>
+            <h1><u>Changes</u></h1>
             <div class="changes">
                 <p id="changesNotes" style="font-family:monospace;"></p>
             </div>

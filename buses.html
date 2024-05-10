@@ -3,19 +3,14 @@
     <head>
         <title>Buses</title>
         <script src="/buses.js"></script>
-        <script src="/sidebar.js"></script>
         <link rel="stylesheet" href="/admin.css">
     </head>
     <body onload="readDb()">
-        <div class="topBar">
-            <span id="menuBtn" onclick="openNav()">&#9776;</span>
-            <div id="sideBar">
-                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
-                <a href="/admin">Schedules</a>
-                <a href="/admin/buses" class="activePage">Buses List</a>
-                <a href="/admin/account">Account</a>
-                <a href="/">Student View</a>
-            </div>
+        <div class="topnav">
+            <a href="/admin">Schedules</a>
+            <a class="active" href="/admin/buses">Buses</a>
+            <a href="/admin/account">Account</a>
+            <a href="/">Student View</a>
         </div>
         <p id="lastUpdated">Last Updated: </p>
         <p id="total">Total: </p>

@@ -5,20 +5,15 @@
         <link rel="stylesheet" href="admin.css">
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="admin.js"></script>
-        <script src="sidebar.js"></script>
         </head>
         <!-- <script src="buses.js"></script> -->
     <body onload="createDragDrop();">
-        <div class="topBar">
-            <span id="menuBtn" onclick="openNav()">&#9776;</span>
-            <div id="sideBar">
-                <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
-                <a href="/admin" class="activePage">Schedules</a>
-                <a href="admin/buses">Buses List</a>
-                <a href="/admin/account">Account</a>
-                <a href="/">Student View</a>
-            </div>
-            
+        <div class="topnav">
+            <a class="active" href="/admin">Schedules</a>
+            <a href="/admin/buses">Buses</a>
+            <a href="/admin/account">Account</a>
+            <a href="/">Student View</a>
+        </div>
             <div id="datetime">
                 <input type="date" id="datePicker">
                 <p>Release Time:</p>
