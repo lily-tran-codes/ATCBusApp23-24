@@ -77,4 +77,8 @@ docker-compose up
     - [Windows Installer](https://github.com/coreybutler/nvm-windows/releases)
     - [macOS & Linux](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
 2. Install node with `nvm install node` and run `nvm use node`
-3. Open Cmd prompt in project's directory and run `npm install -g` to install dependencies
+3. Open Cmd prompt in project's directory and run `npm install` to install dependencies
+4. [Optional] Once all packages installed, run `npm install nodemon` to install nodemon (it refreshes the server automatically upon changes so you don't have to manually restart the server everytime)
+# How to get the app running
+1. Navigate to the project's folder in Cmd prompt
+2. Run `node server.js` to start the app OR `nodemon server.js` if you have nodemon installed (if nodemon is not recognized right after installing it, try restarting Cmd Prompt)
