@@ -61,7 +61,7 @@ docker-compose up
 3. Install and choose "New SQL Server stand-alone installation"
 4. Go through installer until the Instance Configuration section, rename the instance and change its ID if desired, default is SQLEXPRESS
 5. For Database Engine Configuration, choose Mixed Mode and set up sa account
-6. Install SQL Server Management Studio (SSMS) [here](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16)
+6. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [HeidiSQL](https://www.heidisql.com/download.php?download), or any other DBMS interface of your liking that supports SQL Server
 ## Setup
 1. Open Sql Server Configuration Manager
 >[!NOTE]
