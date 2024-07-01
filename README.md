@@ -56,6 +56,9 @@ docker-compose up
 >[!NOTE]
 > Local admin rights required on computer in order to install SQL server
 ## Installation
+>[!NOTE]
+>If you're using MacOS, you will have to install SQL Server with Docker, go to [this section](##-Setup-SQL-Server-for-MacOS-with-Docker)
+## hi
 1. Install SQL Server Express [here](https://www.microsoft.com/en-us/download/details.aspx?id=55994)
 2. Run the installer and choose the custom option
 3. Install and choose "New SQL Server stand-alone installation"
@@ -70,12 +73,13 @@ docker-compose up
 >If SQL Server Configuration Manager is not found, follow the steps in this [link](https://learn.microsoft.com/en-us/answers/questions/166724/sql-server-configuration-manager-not-showing-in-wi)
 2. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
 ![Enable SQL Server Browser](Documentation/enable-sql-browser.png)
-1. Right-click SQL Server Browser and select Start
-2. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
-3. Right-click and enable TCP/IP
-4. Navigate to SQL Server Services and restart SQL Server that is currently running
-5. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
-6. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+3. Right-click SQL Server Browser and select Start
+4. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
+5. Right-click and enable TCP/IP
+6. Navigate to SQL Server Services and restart SQL Server that is currently running
+7. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
+8. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+## Setup SQL Server for MacOS with Docker
 # Setup project's folder
 1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
 2. Clone the repo
