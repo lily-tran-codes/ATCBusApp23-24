@@ -2,7 +2,7 @@
 - Nodejs
 - npm
 - SQL Server
-# Install bus app on server with Docker
+# Install bus app on server with Docker (skip if you're developing and not deploying the application)
 ## Section 1: Database
 >[!NOTE]
 >Create a table called Accounts (drop table first if Accounts already exists) with username and password columns with the script below:
@@ -35,7 +35,7 @@ GO
 3. Put them in a folder together
 ## Section 3: Docker
 1. Launch Docker Desktop app on computer to make sure it's running
-2. Launch Cmd Prompt and navigate to where the folder from Section 2 Step 3 is located
+2. Launch Cmd Prompt/Terminal and navigate to where the folder from Section 2 Step 3 is located
 3. Type in:
 ```batch
 docker-compose pull
@@ -61,7 +61,7 @@ docker-compose up
 3. Install and choose "New SQL Server stand-alone installation"
 4. Go through installer until the Instance Configuration section, rename the instance and change its ID if desired, default is SQLEXPRESS
 5. For Database Engine Configuration, choose Mixed Mode and set up sa account
-6. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [HeidiSQL](https://www.heidisql.com/download.php?download), or any other DBMS interface of your liking that supports SQL Server
+6. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (MacOS not supported), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall), or any other DBMS interface of your liking that supports SQL Server
 >[!IMPORTANT]
 >On SSMS, the hostname is localhost\SQLEXPRESS, but on other DBMS interfaces, the hostname might be only localhost instead.
 ## Setup
@@ -76,13 +76,45 @@ docker-compose up
 4. Navigate to SQL Server Services and restart SQL Server that is currently running
 5. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
 6. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+# Setup project's folder
+1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
+2. Clone the repo
+    - If you use git, open Cmd Prompt/Terminal in the folder that you want to store the project, run `git clone https://github.com/lily10806/ATCBusApp.git`.
+    - If you use Github Desktop, go to File, and choose Clone Repository
+    ![Clone Repo](Documentation/Github-clone.png)
+    Paste the link https://github.com/lily10806/ATCBusApp.git into the URL for the repository, and choose which local path you want it cloned to and clone the repo.
+    ![Clone options](Documentation/clone-options.png)
 # Setting up Node.js
 1. Install nvm
     - [Windows Installer](https://github.com/coreybutler/nvm-windows/releases)
     - [macOS & Linux](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
 2. Install node with `nvm install node` and run `nvm use node`
-3. Open Cmd prompt in project's directory and run `npm install` to install dependencies
-4. [Optional] Once all packages installed, run `npm install nodemon` to install nodemon (it refreshes the server automatically upon changes so you don't have to manually restart the server everytime)
+3. Open Cmd Prompt/Terminal in project's directory and run `npm install` to install dependencies
+4. [Optional] Once all packages are installed, run `npm install nodemon` to install nodemon (it refreshes the server automatically upon changes so you don't have to manually restart the server everytime)
 # How to get the app running
-1. Navigate to the project's folder in Cmd prompt
-2. Run `node server.js` to start the app OR `nodemon server.js` if you have nodemon installed (if nodemon is not recognized right after installing it, try restarting Cmd Prompt)
+1. Navigate to the project's folder in Cmd Prompt/Terminal
+2. Run `node server.js` to start the app OR `nodemon server.js` if you have nodemon installed (if nodemon is not recognized right after installing it, try restarting Cmd Prompt/Terminal)
+# Making changes to the repo (upload changes and getting changes from GitHub)
+- Create a new branch
+  - git: `git branch new-branch-name`
+  - GitHub Desktop: Select branch > New branch, name the new branch and Create branch
+  ![github branch](Documentation/branch.png)
+- Change to another branch (remember to commit any changes you )
+- If you've made changes to the files and want to have them on the new branch, choose 'Bring my changes to [new-branch]' and switch branch
+  ![New branch changes](Documentation/new-branch.png)
+  - git: `git checkout branch-name`
+  - GitHub Desktop: Select Current branch tab and change to another branch
+  ![change branch](Documentation/change-branch.png)
+- Push changes to remote repo
+  - git:
+    1. `git add .` to add all files with changes
+    2. `git commit -m "describe the changes you make here"`
+    3. `git push origin` to push the changes to repo
+  - GitHub Desktop:
+    ![Github Desktop push](Documentation/github-push.png)
+    1. Check the boxes for files you want to upload (on left sidebar)
+    2. Write a summary for the changes you made
+    3. Commit to branch
+- Get remote changes to local repo
+  - git: `git pull origin branch-name-you-want-to`
+  - GitHub Desktop: 
