@@ -97,13 +97,14 @@ docker-compose up
 # Making changes to the repo (upload changes and getting changes from GitHub)
 - Create a new branch
   - git: `git branch new-branch-name`
-  - GitHub Desktop: Select branch > New branch, name the new branch and Create branch
+  - GitHub Desktop: Select branch > New branch, name the new branch and Create branch. If you've made changes to the files and want to have them on the new branch, choose 'Bring my changes to [new-branch]' and switch branch
   ![github branch](Documentation/branch.png)
-- Change to another branch (remember to commit any changes you )
-- If you've made changes to the files and want to have them on the new branch, choose 'Bring my changes to [new-branch]' and switch branch
+- Change to another branch (Be sure to work in a new branch so any unchecked changes won't be committed to the main branch)
+>[!IMPORTANT]
+>Always commit changes to current branch if you don't intend on bringing the uncommitted changes to the new branch to avoid any work loss. Checkout git stash to learn more about putting away local changes.
   ![New branch changes](Documentation/new-branch.png)
   - git: `git checkout branch-name`
-  - GitHub Desktop: Select Current branch tab and change to another branch
+  - GitHub Desktop: Select Current branch tab and change to another branch. Choose whether you want to move uncommitted changes to the new branch or not if prompted.
   ![change branch](Documentation/change-branch.png)
 - Push changes to remote repo
   - git:
@@ -116,5 +117,7 @@ docker-compose up
     2. Write a summary for the changes you made
     3. Commit to branch
 - Get remote changes to local repo
-  - git: `git pull origin branch-name-you-want-to`
-  - GitHub Desktop: 
+  - git: `git pull origin branch-name-you-want-to-pull-from`
+  - GitHub Desktop:
+    - Make sure current branch is published in order to make a pull request
+    - 
