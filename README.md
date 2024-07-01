@@ -119,5 +119,5 @@ docker-compose up
 - Get remote changes to local repo
   - git: `git pull origin branch-name-you-want-to-pull-from`
   - GitHub Desktop:
-    - Make sure current branch is published in order to make a pull request
-    - 
+    - Make sure current branch is published in order to make a pull request. If not published, publish branch to GitHub
+    - Make a pull request
