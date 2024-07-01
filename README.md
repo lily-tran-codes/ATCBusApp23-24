@@ -116,9 +116,10 @@ docker-compose up
     1. Check the boxes for files you want to upload (on left sidebar)
     2. Write a summary for the changes you made
     3. Commit to branch
-- Get remote changes to local repo
+- Get remote changes from branch to local repo (For when you make changes to a branch from another device and want to get that change on this device)
   - git: `git pull origin branch-name-you-want-to-pull-from`
   - GitHub Desktop: 
     - Fetch origin to check for commits
     ![fetch origin](Documentation/fetch-origin.png)
-    - 
+    - Pull origin to get changes from remote branch to local branch
+    ![pull origin](Documentation/pull-origin.png)
