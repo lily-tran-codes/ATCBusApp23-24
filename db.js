@@ -1,7 +1,7 @@
 const sql = require('mssql');
-// require('dotenv').config();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+// to read .env file
 require('dotenv').config();
 
 // database configuration

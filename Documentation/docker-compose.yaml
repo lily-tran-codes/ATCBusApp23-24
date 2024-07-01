@@ -1,0 +1,12 @@
+version: 'latest'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: MsSqlServer
+    environment:
+     - ACCEPT_EULA=Y
+     - SA_PASSWORD=Room#176
+    ports:
+     - "1433:1433"
+    volumes:
+     - ./mssql-data:/var/opt/mssql/data
