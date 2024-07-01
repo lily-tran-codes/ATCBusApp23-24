@@ -64,6 +64,8 @@ docker-compose up
 6. Install SQL Server Management Studio (SSMS) [here](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16)
 ## Setup
 1. Open Sql Server Configuration Manager
+>[!NOTE]
+>If SQL Server Configuration Manager is not found, follow the steps in this [link](https://learn.microsoft.com/en-us/answers/questions/166724/sql-server-configuration-manager-not-showing-in-wi)
 2. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
 ![Enable SQL Server Browser](Documentation/enable-sql-browser.png)
 1. Right-click SQL Server Browser and select Start
