@@ -109,7 +109,7 @@ app.get('/admin/account', (req, res) => {
         res.sendFile("account.html", {root:__dirname});
     }
 })
-app.get('/', (req, res) => {
+app.get('/home', (req, res) => {
     res.sendFile("home.html", {root:__dirname})
 })
 app.get('/map', (req, res) => {
