@@ -16,6 +16,7 @@ app.listen(port, function (err) {
 });
 
 // access static files (js and css files)
+// ! IMPORTANT ALL FILES PUT IN PUBLIC DIRECTORY ARE ACCESSIBLE FROM THE FILES IN THE ROOT DIRECTORY WITHOUT SPECIFYING '/public/file', just '/file'
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -73,6 +74,9 @@ app.get('/db', (req, res) => {
 });
 app.post('/db', (req, res) => {
     const method = req.query.method
+    console.log(req.body.type);
+    console.log("req.body:")
+    console.log(req.body);
     if(method == 'add')
         db.addBus(req.body);
     if(method == 'edit')
@@ -81,8 +85,10 @@ app.post('/db', (req, res) => {
         db.archiveList();
     if(method == 'update')
         db.updateSchedule(req.body, req.query.date);
-    if(method == 'schedule')
+    if(method == 'schedule' && req.body.type != 'clear')
         db.writeSchedule(req.query.date, req.body);
+    if(req.body.type == 'clear')
+        db.clearSchedule(req.query.date)
     res.end();
 })
 app.delete('/db', (req, res) => {
@@ -105,6 +111,9 @@ app.get('/admin/account', (req, res) => {
 })
 app.get('/', (req, res) => {
     res.sendFile("home.html", {root:__dirname})
+})
+app.get('/map', (req, res) => {
+    res.sendFile("map.html", {root:__dirname});
 })
 app.get('/accountdb', (req, res) => {
     db.getAccount().then(account => res.json(account))
