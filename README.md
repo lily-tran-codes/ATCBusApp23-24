@@ -146,3 +146,6 @@ docker-compose up
     ![fetch origin](Documentation/images/fetch-origin.png)
     - Pull origin to get changes from remote branch to local branch
     ![pull origin](Documentation/images/pull-origin.png)
+# Roadmap
+[ ] LDAP
+[ ] HTML template system for page icons
