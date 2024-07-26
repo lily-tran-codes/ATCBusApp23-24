@@ -112,6 +112,9 @@ app.get('/admin/account', (req, res) => {
 app.get('/home', (req, res) => {
     res.sendFile("home.html", {root:__dirname})
 })
+app.get('/', (req, res) => {
+    res.redirect('/home');
+})
 app.get('/map', (req, res) => {
     res.sendFile("map.html", {root:__dirname});
 })
