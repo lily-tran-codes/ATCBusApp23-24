@@ -172,7 +172,7 @@ function createDragDrop(){
                         writeDb(buses, datePicker.value);
                         console.log(buses);
                         buses = [];
-                    }, 1300)
+                    }, 1000)
                 }
             },
         })
