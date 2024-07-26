@@ -220,6 +220,23 @@ function displayBuses(buses, schedules){
     })
     
 }
+// function to clear buses schedule
+async function clearSchedule(){
+    const date = document.getElementById("datePicker").value;
+    // confirm admin wants to clear bus schedule
+    if(confirm('Are you sure you want to clear the schedule for this day?')){
+        // clear bus schedule
+        await fetch("/db?" + new URLSearchParams({
+            method: "clear",
+            date: date,
+        }), {
+            method: "POST",
+            headers: {
+                "Content-type":"application/json"
+            }
+        })
+    }
+}
 // function to make bus divs
 function createBus(route, className="bus"){
     const busDiv = document.createElement('div');

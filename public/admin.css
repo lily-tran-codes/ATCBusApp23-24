@@ -132,10 +132,14 @@ button:hover{
     background-color: rgb(160, 0, 0);
     color: white;
 }
-.deleteButton:hover{
+.deleteButton:hover, .clearButton:hover{
     background-color: red;
     transition: 0.3s;
     color: black;
+}
+.clearButton{
+    background-color: rgb(160, 0, 0);
+    color: white;
 }
 
 /* Add a black background color to the top navigation bar */

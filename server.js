@@ -85,9 +85,9 @@ app.post('/db', (req, res) => {
         db.archiveList();
     if(method == 'update')
         db.updateSchedule(req.body, req.query.date);
-    if(method == 'schedule' && req.body.type != 'clear')
+    if(method == 'schedule')
         db.writeSchedule(req.query.date, req.body);
-    if(req.body.type == 'clear')
+    if(method == 'clear')
         db.clearSchedule(req.query.date)
     res.end();
 })

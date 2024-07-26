@@ -459,4 +459,21 @@ async function changeUsername(newValue){
        conn.close();
    }
 }
-module.exports = { getSchedule, getBuses, addBus, deleteBus, editBus, archiveList, updateSchedule, login, writeSchedule, getStudentSchedule, getAccount, changeUsername, changePassword }
+
+async function clearSchedule(date){
+    try{
+        // create connection pool to db
+        var conn = new sql.ConnectionPool(adminConfig);
+        var req = new sql.Request(conn);
+        // connect to db
+        const db = await conn.connect();
+        await req.query(`USE BusDismissal; DELETE FROM Schedules WHERE schedule_date='${date}';`);
+   } catch (err) {
+       // handles errors
+       console.log("An error has occured: ", err);
+   } finally {
+       // close connection to db
+       conn.close();
+   }
+}
+module.exports = { getSchedule, getBuses, addBus, deleteBus, editBus, archiveList, updateSchedule, login, writeSchedule, getStudentSchedule, getAccount, changeUsername, changePassword, clearSchedule }
