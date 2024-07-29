@@ -5,7 +5,7 @@
 - For freshmen and students who do not know how the bus positions work, go to Map Guide tab in the top left
 ![alt text](Documentation/images/map-guide-tab.png)
 - If the students need to look for their buses, go to the search bar in the top right and enter their bus route. It should then be highlighted in the page.
-- >[!NOTE]
+>[!NOTE]
 >Only the schedule from today will be shown, you cannot see schedules from other days.
 ---
 # Development & Server Setup
@@ -15,6 +15,7 @@
 - SQL Server
 ## Install bus app on server with Docker (skip if you're developing and not deploying the application)
 ## Section 1: Database
+
 >[!NOTE]
 >Create a table called Accounts (drop table first if Accounts already exists) with username and password columns with the script below:
 ```sql
