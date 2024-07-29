@@ -235,6 +235,7 @@ async function clearSchedule(){
                 "Content-type":"application/json"
             }
         })
+        location.reload();
     }
 }
 // function to make bus divs

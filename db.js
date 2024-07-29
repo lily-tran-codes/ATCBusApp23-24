@@ -467,7 +467,7 @@ async function clearSchedule(date){
         var req = new sql.Request(conn);
         // connect to db
         const db = await conn.connect();
-        await req.query(`USE BusDismissal; DELETE FROM Schedules WHERE schedule_date='${date}';`);
+        await req.query(`USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date='${date}'; DELETE FROM Schedules WHERE schedule_date='${date}';`);
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
