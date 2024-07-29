@@ -30,7 +30,7 @@ async function getSchedule(){
 
 function displaySchedule(data){
     const schedule = data.schedule;
-    const notes = data.notes[0].notes;
+    const notes = data.notes.length > 0 ? data.notes[0].notes : '';
     schedule.forEach(bus => {
         console.log(bus.bus_route);
         var className = "bus";
