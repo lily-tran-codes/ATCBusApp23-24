@@ -25,7 +25,20 @@ async function getSchedule(){
     }));
     const schedule = await response.json();
     console.log(schedule);
-    displaySchedule(schedule);
+    // check if schedule is empty
+    if(schedule.schedule.length > 0){
+        // unhide busesDivs
+        const busesDivs = document.getElementsByClassName('busesDiv')
+        for(var i = 0; i < busesDivs.length; i++){
+            // remove hidden class from busesdivs
+            busesDivs[i].classList.remove("hidden");
+        }
+        displaySchedule(schedule);
+    } else {
+        // unhide noSchedule message
+        const noSchedule = document.getElementsByClassName('noSchedule')[0]
+        noSchedule.classList.remove('hidden')
+}
 }
 
 function displaySchedule(data){
