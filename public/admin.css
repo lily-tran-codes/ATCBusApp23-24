@@ -1,6 +1,8 @@
 
 body{
     text-align: center;
+    font-family: arial;
+    display: block;
 }
 body div{
     display: inline-block;
@@ -46,7 +48,7 @@ body div{
 #datetime p{
     margin: auto 0px auto 20px;
 }
-button{
+button, .button{
     background-color: #457ea9;
     color: white;
     border-radius: 10px;
@@ -83,7 +85,7 @@ button:hover{
     margin: 5px 0;
 }
 .bus{
-    border: none;
+    border: 1px solid grey;
     border-radius: 10px;
     font-size: 20px;
     height: 30px;
@@ -98,6 +100,9 @@ button:hover{
 
 .drag{
     cursor: move;
+}
+.drag:not(.inactive):hover{
+    box-shadow:  rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.5rem;
 }
 .drag.inactive{
     cursor: no-drop;
@@ -142,25 +147,40 @@ button:hover{
     color: white;
 }
 
+/* logo */
+.topnav .logo{
+    float: left;
+    margin: 5px;
+    padding: 0;
+    height: 50px;
+}
+.topnav .logo img{
+    width: 100%;
+    height: 100%;
+}
 /* Add a black background color to the top navigation bar */
 .topnav {
-    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 10px;
     overflow: hidden;
     background-color: #e9e9e9;
-    padding: 0 !important;
-    margin: auto 55px;
-    margin-bottom: 20px;
+    position: sticky;
+    text-align: center;
   }
   
   /* Style the links inside the navigation bar */
-  .topnav a {
+  .topnav a{
     float: left;
     display: block;
     color: black;
     text-align: center;
-    padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    text-align: center;
+    padding: 20px;
+    height: 100%;
   }
   
   /* Change the color of links on hover */
@@ -252,10 +272,10 @@ input:focus{
 }
 
 /*********** LOGIN ***********/
-.logo{
+.logo.login{
     max-width: 100%;
 }
-.logo img{
+.logo.login img{
     max-width: 20%;
 }
 #loginForm{
@@ -310,6 +330,7 @@ input:focus{
 #accountsTable input{
     width: 90%;
     text-align: left;
+    overflow: hidden;
 }
 #accountsTable td{
     padding: 10px;

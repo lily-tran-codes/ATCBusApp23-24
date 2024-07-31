@@ -2,6 +2,7 @@ var timeout  = setTimeout(function(){}, 0);
 var inputTimeout = setTimeout(function(){}, 0);
 var buses = [];
 
+// creat drag-and-drop divs
 function createDragDrop(){
     const datePicker = document.getElementById("datePicker");
     const timePicker = document.getElementById("timePicker");
@@ -90,12 +91,12 @@ function createDragDrop(){
             animation: 150,
             filter: ".inactive",
             draggable: ".drag",
-            // prevent bus divs to be put back in buses holder
-            onMove: function onMove(ev){
-                if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
-                    return false;
-                }
-            },
+            // ***REMOVED*** prevent bus divs to be put back in buses holder
+            // onMove: function onMove(ev){
+            //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
+            //         return false;
+            //     }
+            // },
             // save schedule when drag and drop ends
             onEnd: function save(ev){
                 // check if location is different
@@ -131,20 +132,19 @@ function createDragDrop(){
                             }
                         }
                     console.log(buses);
-                    if(ev.from.className != "holder section" && ev.from != ev.to){
+                    if(ev.from != ev.to){
                         console.log("Old parent node: ");
                         var sectionList = ev.from.children;
-                        const section = ev.from.className.split(" ")[1];
                         const group = ev.from.parentNode.getAttribute("name");
+                        const section = group != 'Holder' ? ev.from.className.split(" ")[1] : null;
                         console.log(ev.from);
                         console.log(ev.oldIndex);
                         for(var i = ev.oldIndex + 1; i < sectionList.length; i++){
-                            const route = sectionList[i].textContent;
-                            const position = [section, i].join("-");
+                            const route = group != 'Holder' ? sectionList[i].textContent : null;
+                            const position = group != 'Holder' ? [section, i].join("-") : null;
                             console.log("buses.length: " + buses.length);
                             var routeFound = false;
                             for(var j = 0; j < buses.length; j++){
-                                console.log("traverse");
                                 console.log(buses[j]);
                                 if(buses[j].route == route){
                                     console.log("updated route");

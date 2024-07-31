@@ -238,21 +238,26 @@ async function updateSchedule(buses, date){
             const route = bus.route;
             const group = bus.group;
             const position = bus.position;
-            var exists = await req.query(`USE BusDismissal; SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1) AND schedule_date = '${date}'`);
-            if(exists.recordset.length == 0){
-                console.log("need to create a new record!");
-                await req.query(`USE BusDismissal; INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position) \
-                VALUES( \
-                    (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1),
-                    '${date}',
-                    '${group}',
-                    '${position}'
-                );\n`);
+            if(group != 'Holder'){
+                var exists = await req.query(`USE BusDismissal; SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1) AND schedule_date = '${date}'`);
+                if(exists.recordset.length == 0){
+                    console.log("need to create a new record!");
+                    await req.query(`USE BusDismissal; INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position) \
+                    VALUES( \
+                        (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1),
+                        '${date}',
+                        '${group}',
+                        '${position}'
+                    );\n`);
+                } else {
+                    await req.query(` USE BusDismissal; UPDATE Scheduled_Buses \
+                    SET bus_group = '${group}', bus_position = '${position}' \
+                    WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1);\n`);
+                }
             } else {
-                await req.query(` USE BusDismissal; UPDATE Scheduled_Buses \
-                SET bus_group = '${group}', bus_position = '${position}' \
-                WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1);\n`);
+                await req.query(`USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date='${date}' AND bus_id=(SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1)`);
             }
+            
             conn.close();
         })
         console.log("SAVED");

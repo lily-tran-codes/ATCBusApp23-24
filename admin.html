@@ -10,11 +10,13 @@
         <!-- <script src="buses.js"></script> -->
     <body onload="createDragDrop();">
         <div class="topnav">
+            <div class="logo"><img src="images/atc-logo.png"></div>
             <a class="active" href="/admin">Schedules</a>
             <a href="/admin/buses">Buses</a>
             <a href="/admin/account">Account</a>
             <a href="/home">Student View</a>
         </div>
+        <br>
             <div id="datetime">
                 <input type="date" id="datePicker">
                 <p>Release Time:</p>
@@ -27,7 +29,7 @@
             <p id="saveStatus"></p>
         </div>
         <!--where unscheduled buses go-->
-        <div class="busesDiv" id="busesHolder">
+        <div class="busesDiv" id="busesHolder" name="Holder">
             <h1>Buses</h1>
             <div class="holder section" id="busesHolderSort">
                 <!--bus routes go here-->
