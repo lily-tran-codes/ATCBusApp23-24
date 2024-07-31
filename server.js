@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
             res.redirect('/admin');
             res.end(); // end request (!important page will load for a long time without this)
         } else {
-            res.send("login failed.");
+            res.send("Login failed. <a href='/login'>Return to login.</a>");
         }
     });
 })
