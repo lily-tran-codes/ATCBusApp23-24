@@ -279,7 +279,6 @@ async function login(creds){
         const db = await conn.connect();
         // query results from db
         console.log("server logging in")
-        console.log(creds);
         var accounts = await req.query(`USE BusDismissal; SELECT * FROM Accounts;`);
         if(accounts.recordset.length == 0){
             console.log('no accounts');
