@@ -30,7 +30,7 @@ app.use(session({
     rolling: true,
     cookie: {
         httpOnly: true,
-        maxAge: 1*60*60*1000
+        maxAge: 12000000
     }
 }))
 

@@ -140,8 +140,8 @@ function createDragDrop(){
                         console.log(ev.from);
                         console.log(ev.oldIndex);
                         for(var i = ev.oldIndex + 1; i < sectionList.length; i++){
-                            const route = group != 'Holder' ? sectionList[i].textContent : null;
-                            const position = group != 'Holder' ? [section, i].join("-") : null;
+                            const route = group != sectionList[i].textContent;
+                            const position = group != [section, i].join("-");
                             console.log("buses.length: " + buses.length);
                             var routeFound = false;
                             for(var j = 0; j < buses.length; j++){
