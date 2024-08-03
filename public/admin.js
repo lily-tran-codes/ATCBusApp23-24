@@ -29,6 +29,11 @@ function createDragDrop(){
         }
     })
     document.getElementsByClassName("saveButton")[0].addEventListener("click", function(){
+        console.log("====buses to save:=====");
+        console.log(buses);
+        writeDb(buses, datePicker.value);
+        console.log(buses);
+        buses = [];
         document.getElementById("saveStatus").textContent = "Saved!";
     })
     // load dismissal schedule for today (default date)
@@ -76,7 +81,7 @@ function createDragDrop(){
             // save buses' positions to db
             console.log(notesInput.value);
             writeSchedule(datePicker.value, notesInput.value, 'notes');
-        }, 1300)
+        }, 1000)
     })
     // create drag and drop boards
     const sections = document.getElementsByClassName("section");
@@ -136,9 +141,9 @@ function createDragDrop(){
                         console.log("Old parent node: ");
                         var sectionList = ev.from.children;
                         const group = ev.from.parentNode.getAttribute("name");
-                        const section = group != 'Holder' ? ev.from.className.split(" ")[1] : null;
+                        const section = ev.from.className.split(" ")[1];
                         console.log(ev.from);
-                        console.log(ev.oldIndex);
+                        console.log("old index: " + ev.oldIndex);
                         for(var i = ev.oldIndex + 1; i < sectionList.length; i++){
                             const route = group != sectionList[i].textContent;
                             const position = group != [section, i].join("-");
@@ -169,7 +174,9 @@ function createDragDrop(){
                     timeout = setTimeout(function(){
                         document.getElementById("saveStatus").textContent = "Saved!";
                         // save buses' positions to db
-                        writeDb(buses, datePicker.value);
+                        if(buses.length > 0){
+                            writeDb(buses, datePicker.value);
+                        }
                         console.log(buses);
                         buses = [];
                     }, 1000)

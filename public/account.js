@@ -3,7 +3,6 @@ getAccount();
 async function getAccount(){
     const response = await fetch('/accountdb');
     const data = await response.json();
-    console.log(data);
     displayAccount(data)
 }
 function displayAccount(account){
