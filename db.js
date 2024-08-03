@@ -13,11 +13,12 @@ const adminConfig = {
     port: 1433,
     trustServerCertificate: true
 }
+// !IMPORTANT: Change this back ASAP once bug is fixed!!!
 const studentConfig = {
     server: process.env.SERVER,
     database: 'BusDismissal',
-    user: process.env.STUDENT_USERNAME,
-    password: process.env.STUDENT_PASSWORD,
+    user: process.env.ADMIN_USERNAME,
+    password: process.env.ADMIN_PASSWORD,
     port: 1433,
     trustServerCertificate: true
 };

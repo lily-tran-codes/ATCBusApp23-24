@@ -31,7 +31,8 @@ function createDragDrop(){
     document.getElementsByClassName("saveButton")[0].addEventListener("click", function(){
         console.log("====buses to save:=====");
         console.log(buses);
-        writeDb(buses, datePicker.value);
+        if(buses.length > 0)
+            writeDb(buses, datePicker.value);
         console.log(buses);
         buses = [];
         document.getElementById("saveStatus").textContent = "Saved!";
