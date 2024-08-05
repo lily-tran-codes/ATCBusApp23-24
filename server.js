@@ -2,14 +2,30 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser')
+const {createServer} = require('http')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
+// socket.io for live changes
+const {Server} = require('socket.io')
 
+// initialize app to handle functions
 const app = express();
+// server that get supplied from the app
+const server = createServer(app);
+// initialize instance of socket.io
+const io = new Server(server);
 const port = process.env.PORT;
 const db = require('./db');
 
+io.on('connection', (socket) => {
+    console.log('user logged in')
+    socket.on('update schedule', (date) => {
+        console.log('schedule updated for:');
+        console.log(date)
+    })
+})
+
 // set server to port
-app.listen(port, function (err) {
+server.listen(port, function (err) {
     if (err)
         console.log(err);
     console.log("Server listening on PORT", port);
@@ -34,6 +50,7 @@ app.use(session({
     }
 }))
 
+// **** route handlers ****
 // serve HTML page (GET)
 app.get('/admin', (req, res) => {
     if(req.session.username == null){

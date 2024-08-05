@@ -1,6 +1,7 @@
 var timeout  = setTimeout(function(){}, 0);
 var inputTimeout = setTimeout(function(){}, 0);
 var buses = [];
+const socket = io()
 
 // creat drag-and-drop divs
 function createDragDrop(){
@@ -279,6 +280,8 @@ async function writeDb(buses, date){
         },
         body: JSON.stringify(buses)
     })
+    // emit events to the server
+    socket.emit('update schedule', date);
 }
 // function to get data from server
 async function readDb(date){

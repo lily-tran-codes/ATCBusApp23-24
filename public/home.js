@@ -1,3 +1,5 @@
+const socket = io();
+
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 function formatDate(date){
     var today = new Date(date),
