@@ -11,8 +11,8 @@
   "scripts": {
     "start": "./node_modules/.bin/nodemon server.js"
   },
-  "name": "sql-practice",
-  "version": "1.0.0",
+  "name": "atc-bus-app",
+  "version": "1.5",
   "main": "server.js",
   "author": "Lily",
   "license": "ISC",
