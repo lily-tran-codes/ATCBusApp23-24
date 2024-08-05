@@ -13,12 +13,12 @@ const adminConfig = {
     port: 1433,
     trustServerCertificate: true
 }
-// !IMPORTANT: Change this back ASAP once bug is fixed!!!
+
 const studentConfig = {
     server: process.env.SERVER,
     database: 'BusDismissal',
-    user: process.env.ADMIN_USERNAME,
-    password: process.env.ADMIN_PASSWORD,
+    user: process.env.STUDENT_USERNAME,
+    password: process.env.STUDENT_PASSWORD,
     port: 1433,
     trustServerCertificate: true
 };
@@ -350,14 +350,16 @@ async function getStudentSchedule(date){
         AND sb.schedule_date = '${date}';`)
         console.log(schedule.recordset);
         const notes = await req.query(`USE BusDismissal; SELECT notes FROM Schedules WHERE schedule_date='${date}';`);
+        conn.close();
         return {schedule : schedule.recordset, notes : notes.recordset}
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
-   } finally {
-       // close connection to db
-       conn.close();
-   }
+   } 
+//    finally {
+//        // close connection to db
+//        conn.close();
+//    }
 }
 
 // function to get admin account
@@ -366,7 +368,6 @@ async function getAccount(){
         // create connection pool to db
         var conn = new sql.ConnectionPool(adminConfig);
         var req = new sql.Request(conn);
-        var pw = '';
         // connect to db
         const db = await conn.connect();
         const account = await req.query(`USE BusDismissal; SELECT username, password FROM Accounts;`);
