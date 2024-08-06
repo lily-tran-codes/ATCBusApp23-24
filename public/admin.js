@@ -3,7 +3,9 @@
 var buses = [];
 var timeModified = false;
 var notesModified = false;
-// creat drag-and-drop divs
+
+window.addEventListener('load', createDragDrop);
+// create drag-and-drop divs
 function createDragDrop(){
     const datePicker = document.getElementById("datePicker");
     const timePicker = document.getElementById("timePicker");
