@@ -281,7 +281,9 @@ async function writeDb(buses, date){
         body: JSON.stringify(buses)
     })
     // emit events to the server
-    socket.emit('update schedule', date);
+    if(formatDate(new Date()) == date){
+        socket.emit('update schedule', date);
+    }
 }
 // function to get data from server
 async function readDb(date){

@@ -21,6 +21,8 @@ io.on('connection', (socket) => {
     socket.on('update schedule', (date) => {
         console.log('schedule updated for:');
         console.log(date)
+        // broadcast for all sockets
+        io.emit('updated schedule')
     })
 })
 
