@@ -314,14 +314,13 @@ async function writeSchedule(date, data){
         // connect to db
         const db = await conn.connect();
         var query = '';
-        var type = data.type == 'time' ? 'release_time' : 'notes';
-        console.log(type);
+        console.log(data)
         // generate salt and hash password (salt is used to attach random string to hashed password)
         const schedule = await req.query(`USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = '${date}'`);
         if( schedule.recordset.length == 0){
             query = `USE BusDismissal; INSERT INTO Schedules(schedule_date, release_time, notes) VALUES('${date}', '${time}', '${notes}')`
         } else {
-            query = `USE BusDismissal; UPDATE Schedules SET ${type}='${data.info}' WHERE schedule_date = '${date}'`
+            query = `USE BusDismissal; UPDATE Schedules SET release_time='${data.time}', notes = '${data.notes}' WHERE schedule_date = '${date}'`
         }
         console.log("query to run: ")
         console.log(query);

@@ -1,7 +1,8 @@
-var timeout  = setTimeout(function(){}, 0);
-var inputTimeout = setTimeout(function(){}, 0);
+// var timeout  = setTimeout(function(){}, 0);
+// var inputTimeout = setTimeout(function(){}, 0);
 var buses = [];
-
+var timeModified = false;
+var notesModified = false;
 // creat drag-and-drop divs
 function createDragDrop(){
     const datePicker = document.getElementById("datePicker");
@@ -33,6 +34,16 @@ function createDragDrop(){
         console.log(buses);
         if(buses.length > 0)
             writeDb(buses, datePicker.value);
+        // save notes and time content
+        if(timeModified || notesModified){
+            const info = {
+                time : timePicker.value,
+                notes : notesInput.value
+            }
+            writeSchedule(datePicker.value, info)
+            timeModified = false;
+            notesModified = false;
+        }
         console.log(buses);
         buses = [];
         document.getElementById("saveStatus").textContent = "Saved!";
@@ -67,22 +78,28 @@ function createDragDrop(){
         notesInput.className = '';
     };
     timePicker.onchange = function(){
-        // get release time
-        const releaseTime = timePicker.value;
-        console.log("release time: " + releaseTime);
-        writeSchedule(datePicker.value, releaseTime, 'time');
-        document.getElementById("saveStatus").textContent = "Saved!"
+        // autosave functions removed
+        // // get release time
+        // const releaseTime = timePicker.value;
+        // console.log("release time: " + releaseTime);
+        // writeSchedule(datePicker.value, releaseTime, 'time');
+        // document.getElementById("saveStatus").textContent = "Saved!"
+        timeModified = true;
     }
     notesInput.addEventListener('keydown', function(){
-        // get notes
-        clearTimeout(inputTimeout);
-        document.getElementById("saveStatus").textContent = "";
-        inputTimeout = setTimeout(function(){
-            document.getElementById("saveStatus").textContent = "Saved!";
-            // save buses' positions to db
-            console.log(notesInput.value);
-            writeSchedule(datePicker.value, notesInput.value, 'notes');
-        }, 1000)
+        // autosave functions removed
+        // // get notes
+        // clearTimeout(inputTimeout);
+        // document.getElementById("saveStatus").textContent = "";
+        // inputTimeout = setTimeout(function(){
+        //     document.getElementById("saveStatus").textContent = "Saved!";
+        //     // save buses' positions to db
+        //     console.log(notesInput.value);
+        //     writeSchedule(datePicker.value, notesInput.value, 'notes');
+        // }, 1000)
+        if (!notesModified){
+            notesModified = true;
+        }
     })
     // create drag and drop boards
     const sections = document.getElementsByClassName("section");
@@ -107,7 +124,7 @@ function createDragDrop(){
             onEnd: function save(ev){
                 // check if location is different
                 if(ev.to != ev.from || ev.newIndex != ev.oldIndex){
-                    clearTimeout(timeout);
+                    // clearTimeout(timeout);
                     document.getElementById("saveStatus").textContent = "";
                     const group = ev.to.parentNode.getAttribute("name");
                     const section = ev.to.className.substring(ev.to.className.indexOf("section ")+"section ".length, ev.to.className.length);
@@ -172,15 +189,15 @@ function createDragDrop(){
                         }
                         console.log(buses);
                     }
-                    timeout = setTimeout(function(){
-                        document.getElementById("saveStatus").textContent = "Saved!";
-                        // save buses' positions to db
-                        if(buses.length > 0){
-                            writeDb(buses, datePicker.value);
-                        }
-                        console.log(buses);
-                        buses = [];
-                    }, 1000)
+                    // timeout = setTimeout(function(){
+                    //     document.getElementById("saveStatus").textContent = "Saved!";
+                    //     // save buses' positions to db
+                    //     if(buses.length > 0){
+                    //         writeDb(buses, datePicker.value);
+                    //     }
+                    //     console.log(buses);
+                    //     buses = [];
+                    // }, 1000)
                 }
             },
         })
@@ -255,7 +272,7 @@ function createBus(route, className="bus"){
     return busDiv;
 }
 // function to save schedule's info
-async function writeSchedule(date, info, type){
+async function writeSchedule(date, info){
     await fetch("/db?" + new URLSearchParams({
         method: "schedule",
         date: date,
@@ -264,7 +281,7 @@ async function writeSchedule(date, info, type){
         headers: {
             "Content-type":"application/json"
         },
-        body: JSON.stringify({info : info, type : type})
+        body: JSON.stringify(info)
     })
 }
 // function to save buses
