@@ -31,6 +31,7 @@ server.listen(port, function (err) {
     if (err)
         console.log(err);
     console.log("Server listening on PORT", port);
+    console.log("Using latest version")
 });
 
 // access static files (js and css files)
