@@ -1,7 +1,8 @@
 // import express package
 const express = require('express');
 const session = require('express-session');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const { closeAll } = require('./pool-manager')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
 
 const app = express();
@@ -16,6 +17,12 @@ app.listen(port, function (err) {
     console.log("Using latest version")
 });
 
+// close db pools before exit (this is not being triggered by Ctrl + C)
+process.on('beforeExit', async () => {
+    console.log('Closing all connections...')
+    await closeAll();
+    process.exit(0);
+})
 // access static files (js and css files)
 // ! IMPORTANT ALL FILES PUT IN PUBLIC DIRECTORY ARE ACCESSIBLE FROM THE FILES IN THE ROOT DIRECTORY WITHOUT SPECIFYING '/public/file', just '/file'
 app.use(express.static('public'));
