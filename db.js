@@ -1,10 +1,8 @@
 const sql = require('mssql');
-// encrypt and hash password
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 // to read .env file
 require('dotenv').config();
-// socket for live changes
 
 // database configuration
 const adminConfig = {

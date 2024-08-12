@@ -15,32 +15,13 @@
             <div class="searchBar"><input id="searchBar" type="text" placeholder="Search.."></div>
         </div>
         <h1 id="scheduleDate" style="text-align:center; margin-bottom: 0px;"></h1>
-        <div class="noSchedule hidden">
-            <h1>No Bus Schedules Today</h1>
-        </div>
-        <div class="busesDiv hidden">
-            <h1><u>Outside Buses</u></h1>
-            <div class="buses" id="OutsideBuses" name="Outside">
-                <div class="section 1">
-                    <!--Bus divs go here-->
-                </div>
-                <div class="divider">Drive</div>
-                <div class="section 2">
-                    <!--Bus divs go here-->
-                </div>
-                <div class="divider">Stop Sign</div>
-                <div class="section 3">
-                    <!--Bus divs go here-->
-                </div>
-                <div class="divider">Walk</div>
-                <div class="section 4">
-                    <!--Bus divs go here-->
-                </div>
+        <div id="schedule">
+            <div class="noSchedule hidden">
+                <h1>No Bus Schedules Today</h1>
             </div>
-        </div>
-        <div class="busesDiv hidden">
-            <h1><u>Inside Buses</u></h1>
-                <div class="buses" id="InsideBuses" name="Inside">
+            <div class="busesDiv hidden">
+                <h1><u>Outside Buses</u></h1>
+                <div class="buses" id="OutsideBuses" name="Outside">
                     <div class="section 1">
                         <!--Bus divs go here-->
                     </div>
@@ -57,17 +38,38 @@
                         <!--Bus divs go here-->
                     </div>
                 </div>
-        </div>
-        <div class="busesDiv hidden" name="NHY">
-            <h1><u>NHY</u></h1>
-            <div class="buses section 0" id="NHYBuses">
-                <!--bus divs go here-->
             </div>
-        </div>
-        <div class="busesDiv hidden" id="BusChanges" name="Changes">
-            <h1><u>Changes</u></h1>
-            <div class="changes">
-                <p id="changesNotes" style="font-family:monospace;"></p>
+            <div class="busesDiv hidden">
+                <h1><u>Inside Buses</u></h1>
+                    <div class="buses" id="InsideBuses" name="Inside">
+                        <div class="section 1">
+                            <!--Bus divs go here-->
+                        </div>
+                        <div class="divider">Drive</div>
+                        <div class="section 2">
+                            <!--Bus divs go here-->
+                        </div>
+                        <div class="divider">Stop Sign</div>
+                        <div class="section 3">
+                            <!--Bus divs go here-->
+                        </div>
+                        <div class="divider">Walk</div>
+                        <div class="section 4">
+                            <!--Bus divs go here-->
+                        </div>
+                    </div>
+            </div>
+            <div class="busesDiv hidden" name="NHY">
+                <h1><u>NHY</u></h1>
+                <div class="buses section 0" id="NHYBuses">
+                    <!--bus divs go here-->
+                </div>
+            </div>
+            <div class="busesDiv hidden" id="BusChanges" name="Changes">
+                <h1><u>Changes</u></h1>
+                <div class="changes">
+                    <p id="changesNotes" style="font-family:monospace;"></p>
+                </div>
             </div>
         </div>
     </body>

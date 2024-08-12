@@ -1,10 +1,67 @@
 const socket = io();
+const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const emptySchedule = '<div class="noSchedule hidden">\
+        <h1>No Bus Schedules Today</h1>\
+        </div>\
+        <div class="busesDiv hidden">\
+            <h1><u>Outside Buses</u></h1>\
+            <div class="buses" id="OutsideBuses" name="Outside">\
+                <div class="section 1">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Drive</div>\
+                <div class="section 2">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Stop Sign</div>\
+                <div class="section 3">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Walk</div>\
+                <div class="section 4">\
+                    <!--Bus divs go here-->\
+                </div>\
+            </div>\
+        </div>\
+        <div class="busesDiv hidden">\
+            <h1><u>Inside Buses</u></h1>\
+                <div class="buses" id="InsideBuses" name="Inside">\
+                    <div class="section 1">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Drive</div>\
+                    <div class="section 2">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Stop Sign</div>\
+                    <div class="section 3">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Walk</div>\
+                    <div class="section 4">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                </div>\
+        </div>\
+        <div class="busesDiv hidden" name="NHY">\
+            <h1><u>NHY</u></h1>\
+            <div class="buses section 0" id="NHYBuses">\
+                <!--bus divs go here-->\
+            </div>\
+        </div>\
+        <div class="busesDiv hidden" id="BusChanges" name="Changes">\
+            <h1><u>Changes</u></h1>\
+            <div class="changes">\
+                <p id="changesNotes" style="font-family:monospace;"></p>\
+            </div>\
+        </div>\
+    </body>'
+
 socket.on('updated schedule', () => {
+    // clear out current schedule
+    document.getElementById('schedule').innerHTML = emptySchedule;
     getSchedule();
 })
-
-const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
 window.addEventListener('load', getSchedule);
 
 function formatDate(date){
