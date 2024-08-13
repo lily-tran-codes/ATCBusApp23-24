@@ -116,6 +116,9 @@ function createDragDrop(){
             animation: 150,
             filter: ".inactive",
             draggable: ".drag",
+            scroll: true,
+            scrollSensitivity: 100,
+            scrollSpeed: 10,
             // ***REMOVED*** prevent bus divs to be put back in buses holder
             // onMove: function onMove(ev){
             //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){

@@ -251,7 +251,7 @@ async function updateSchedule(buses, date){
                 await pool.request()
                 .input('date', sql.Date, date)
                 .input('route', sql.VarChar, route)
-                .query('USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
+                .query('DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
                     AND bus_id=(SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
             }
         })
@@ -344,10 +344,10 @@ async function login(creds){
 }
 async function writeSchedule(date, data){
     try{
-        const pool = await get('admin');
+        const pool = await get('admin')
+        await pool.connect();
         var query = '';
         console.log(data)
-        // generate salt and hash password (salt is used to attach random string to hashed password)
         const schedule = await pool.request()
         .input('date', sql.Date, date)
         .query('USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = @date');
@@ -386,6 +386,7 @@ async function getStudentSchedule(date){
         const notes = await pool.request()
         .input('date', sql.Date, date)
         .query('SELECT notes FROM Schedules WHERE schedule_date = @date;')
+        console.log(schedule.recordset)
         return {schedule : schedule.recordset, notes : notes.recordset}
     } catch(err){
         // handles errors
