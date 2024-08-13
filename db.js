@@ -69,27 +69,33 @@ const middleware = new Middleware();
 
 async function getSchedule(date){
     try{
-        await sql.connect(adminConfig);
+        const pool = await get('admin');
+        await pool.connect();
         // get schedule
-        const scheduleRes = await sql.query(`USE BusDismissal; \
-        SELECT sb.schedule_date, b.bus_route, sb.bus_group, sb.bus_position, b.active
-        FROM Scheduled_Buses sb JOIN Buses b
-        ON sb.bus_id = b.id
-        WHERE schedule_date ='${date}'
-        ORDER BY sb.bus_position;`);
+        const scheduleRes = await pool.request()
+        .input('date', sql.Date, date)
+        .query('SELECT sb.schedule_date, b.bus_route, sb.bus_group, sb.bus_position, b.active\
+        FROM Scheduled_Buses sb JOIN Buses b\
+        ON sb.bus_id = b.id\
+        WHERE schedule_date =@date\
+        ORDER BY sb.bus_position;');
         var active = true;
         if (scheduleRes.recordset.length > 0)
             active = scheduleRes.recordset[0].active
-        const info = await sql.query(`SELECT release_time, notes FROM Schedules WHERE schedule_date = '${date}'`);
+        const info = await pool.request()
+        .input('date', sql.Date, date)
+        .query('SELECT release_time, notes FROM Schedules WHERE schedule_date = @date');
         var infoData = [];
         if(info.recordset.length > 0){
             infoData = info.recordset;
         }
         if(active){
             // get buses that are not in schedule to display on bus holder
-            const busRes = await sql.query(`USE BusDismissal; \
+            const busRes = await pool.request()
+            .input('date', sql.Date, date)
+            .query('USE BusDismissal; \
             SELECT * FROM Buses b \
-            WHERE NOT EXISTS (SELECT * FROM Scheduled_Buses sb WHERE b.id = sb.bus_id AND schedule_date ='${date}') AND active = 1 ORDER BY b.bus_route;`);
+            WHERE NOT EXISTS (SELECT * FROM Scheduled_Buses sb WHERE b.id = sb.bus_id AND schedule_date = @date) AND active = 1 ORDER BY b.bus_route;');
             return {buses : busRes.recordset, schedule : scheduleRes.recordset, info : infoData};
         }
         // return results
@@ -105,12 +111,10 @@ async function getSchedule(date){
 // function to get bus routes for a list of buses
 async function getBuses(){
     try{
-         await sql.connect(adminConfig)
-         // query results from db
-         const res = await sql.query("USE BusDismissal; \
-         SELECT * FROM Buses \
-         WHERE active=1 \
-         ORDER BY bus_route;"); // get active buses (buses that are in the current school year)
+        const pool = await get('admin');
+        await pool.connect();
+        const res = await pool.request()
+        .query('SELECT * FROM Buses WHERE active = 1 ORDER BY bus_route;')
          // assign query result to array
          const buses = res.recordset;
          // return results
@@ -128,15 +132,15 @@ async function addBus(bus){
     try{
         const route = bus.route;
         const update = bus.update;
-        const query = `USE BusDismissal;\
-        INSERT INTO Buses(bus_route, update_date, active)\
-        VALUES ('${route}', '${update}', 1);\
-        UPDATE Buses SET update_date = '${update}' WHERE active = 1;`;
-        console.log(query);
         // create connection pool to db
-        await sql.connect(adminConfig);
-        // run insert and update query
-        await sql.query(`${query} UPDATE Buses SET update_date = '${update}' WHERE active = 1;`);
+        const pool = await get('admin');
+        await pool.connect();
+        await pool.request()
+        .input('route', sql.VarChar, route)
+        .input('update', sql.Date, update)
+        .query('INSERT INTO Buses(bus_route, update_date, active)\
+            VALUES(@route, @update, 1)\
+            UPDATE Buses SET update_date = @update WHERE active = 1')
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -173,8 +177,6 @@ async function editBus(bus){
         .input('updatedRoute', sql.VarChar, bus.updatedRoute)
         .input('initRoute', sql.VarChar, bus.initRoute)
         .query('USE BusDismissal; UPDATE Buses SET bus_route = @updatedRoute WHERE bus_route = @initRoute'); // get active buses (buses that are in the current school year)
-        // query results from db
-        await sql.query(`USE BusDismissal; UPDATE Buses SET bus_route = '${bus.updatedRoute}' WHERE bus_route = '${bus.initRoute}'`); // get active buses (buses that are in the current school year)
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -189,7 +191,7 @@ async function archiveList(){
     try{
         const pool = await get('admin');
         await pool.connect();
-        const res = await pool.request()
+        await pool.request()
         .query("USE BusDismissal; UPDATE Buses SET active = 0 WHERE active = 1;"); // get active buses (buses that are in the current school year)
    } catch (err) {
        // handles errors
@@ -306,16 +308,21 @@ async function updateSchedule(buses, date){
 // function to login user
 async function login(creds){
     try{
-        await sql.connect(adminConfig)
+        const pool = await get('admin');
+        await pool.connect();
         // query results from db
         console.log("server logging in")
-        var accounts = await sql.query(`USE BusDismissal; SELECT * FROM Accounts;`);
+        var accounts = await pool.request()
+        .query(`USE BusDismissal; SELECT * FROM Accounts;`);
+
         if(accounts.recordset.length == 0){
             console.log('no accounts');
             return creds.username == process.env.DEFAULT_ADMIN_LOGIN_NAME && creds.password == process.env.DEFAULT_ADMIN_LOGIN_PASS ? true : false
         } else {
             console.log('accounts found');
-            accounts = await sql.query(`USE BusDismissal; SELECT * FROM Accounts WHERE username = '${creds.username}'`);
+            accounts = await pool.request()
+            .input('username', sql.VarChar, creds.username)
+            .query('USE BusDismissal; SELECT * FROM Accounts WHERE username = @username');
             if(accounts.recordset.length == 0)
                 return false;
             try{
@@ -337,12 +344,14 @@ async function login(creds){
 }
 async function writeSchedule(date, data){
     try{
-        await sql.connect(adminConfig)
+        const pool = await get('admin');
         var query = '';
         console.log(data)
         // generate salt and hash password (salt is used to attach random string to hashed password)
-        const schedule = await sql.query(`USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = '${date}'`);
-        if( schedule.recordset.length == 0){
+        const schedule = await pool.request()
+        .input('date', sql.Date, date)
+        .query('USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = @date');
+        if(schedule.recordset.length == 0){
             query = `USE BusDismissal; INSERT INTO Schedules(schedule_date, release_time, notes) VALUES('${date}', '${time}', '${notes}')`
         } else {
             query = `USE BusDismissal; UPDATE Schedules SET release_time='${data.time}', notes = '${data.notes}' WHERE schedule_date = '${date}'`
@@ -350,7 +359,7 @@ async function writeSchedule(date, data){
         console.log("query to run: ")
         console.log(query);
         // run query
-        await sql.query(query);
+        await pool.request().query(query);
         console.log('INFO SAVED');
    } catch (err) {
        // handles errors
@@ -371,7 +380,8 @@ async function getStudentSchedule(date){
         FROM Scheduled_Buses sb, Buses b, Schedules s \
         WHERE sb.bus_id = b.id \
         AND s.schedule_date = sb.schedule_date \
-        AND sb.schedule_date = @date;')
+        AND sb.schedule_date = @date\
+        ORDER BY sb.bus_position;')
         console.log('data:')
         const notes = await pool.request()
         .input('date', sql.Date, date)
@@ -407,10 +417,10 @@ async function getStudentSchedule(date){
 // function to get admin account
 async function getAccount(){
     try{
-        await sql.connect(adminConfig)
-        const account = await sql.query(`USE BusDismissal; SELECT username, password FROM Accounts;`);
-        console.log("account from database: ");
-        console.log(account.recordset);
+        const pool = await get('admin')
+        await pool.connect();
+        const account = await pool.request()
+        .query(`USE BusDismissal; SELECT username, password FROM Accounts;`);
         if(account.recordset.length == 0){
             console.log("no accounts");
             return {username : process.env.DEFAULT_ADMIN_LOGIN_NAME, password : process.env.DEFAULT_ADMIN_LOGIN_PASS};
@@ -429,10 +439,11 @@ async function getAccount(){
 // function to change password
 async function changePassword(newValue, oldValue){
         try{
-            await sql.connect(adminConfig)
-            var pw = '';
+            const pool = await get('admin')
+            await pool.connect()
             // check if old passwords match
-            const oldPw = await sql.query(' USE BusDismissal; SELECT password FROM accounts');
+            const oldPw = await pool.request()
+            .query(' USE BusDismissal; SELECT password FROM accounts');
             console.log(oldValue);
             // check if account exists in database
             if(oldPw.recordset.length > 0){
@@ -445,7 +456,9 @@ async function changePassword(newValue, oldValue){
                     // hash password
                     var hashPw = await bcrypt.hash(newValue, 10);
                     // change password in database
-                    await sql.query(`USE BusDismissal; UPDATE Accounts SET password = '${hashPw}'`);
+                    await pool.request()
+                    .input('hashPw', sql.VarChar, hashPw)
+                    .query(`USE BusDismissal; UPDATE Accounts SET password = @hashPw`);
                     console.log('password updated');
                 }
             // if account doesn't exist   
@@ -457,7 +470,10 @@ async function changePassword(newValue, oldValue){
                     // hash password
                     var hashPw = await bcrypt.hash(newValue, 10);
                     // create new account in db
-                    await sql.query(`USE BusDismissal; INSERT INTO Accounts(username, password) VALUES('${process.env.DEFAULT_ADMIN_LOGIN_NAME}', '${hashPw}')`);
+                    await pool.request()
+                    .input('defaultAdmin', sql.VarChar, process.env.DEFAULT_ADMIN_LOGIN_NAME)
+                    .input('hashPw', sql.VarChar, hashPw)
+                    .query(`USE BusDismissal; INSERT INTO Accounts(username, password) VALUES(@defaultAdmin, @hashPw)`);
                     console.log('new account with new password created');
                 }
             }
@@ -474,10 +490,12 @@ async function changePassword(newValue, oldValue){
 // function to change account's credentials
 async function changeUsername(newValue){
     try{
-        await sql.connect(adminConfig)
+        const pool = await get('admin');
+        await pool.connect();
         var query = '';
         console.log(query);
-        const accounts = await sql.query(`USE BusDismissal; SELECT * FROM Accounts;`);
+        const accounts = await pool.request()
+        .query(`USE BusDismissal; SELECT * FROM Accounts;`);
         console.log(newValue);
         if(accounts.recordset.length == 0){
                 console.log('insert new row')
@@ -486,7 +504,7 @@ async function changeUsername(newValue){
         } else {
             query = `USE BusDismissal; UPDATE Accounts SET username = '${newValue}';`;
         }
-        await sql.query(query);
+        await pool.request().query(query);
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -498,8 +516,11 @@ async function changeUsername(newValue){
 
 async function clearSchedule(date){
     try{
-        await sql.connect(adminConfig)
-        await sql.query(`USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date='${date}'; DELETE FROM Schedules WHERE schedule_date='${date}';`);
+        const pool = await get('admin');
+        await pool.connect();
+        await pool.request()
+        .input('date', sql.Date, date)
+        .query('USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date=@date; DELETE FROM Schedules WHERE schedule_date=@date;');
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);

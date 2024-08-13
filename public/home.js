@@ -1,7 +1,9 @@
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 window.addEventListener('load', getSchedule);
-
+window.setTimeout(function(){
+    window.location.reload();
+}, 60000)
 function formatDate(date){
     var today = new Date(date),
         month = '' + (today.getMonth()+1),

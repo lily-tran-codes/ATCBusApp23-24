@@ -82,8 +82,6 @@ app.get('/db', (req, res) => {
 });
 app.post('/db', (req, res) => {
     const method = req.query.method
-    console.log(req.body.type);
-    console.log("req.body:")
     console.log(req.body);
     if(method == 'add')
         db.addBus(req.body);
