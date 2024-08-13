@@ -76,7 +76,7 @@ async function getSchedule(date){
         FROM Scheduled_Buses sb JOIN Buses b
         ON sb.bus_id = b.id
         WHERE schedule_date ='${date}'
-        ORDER BY b.bus_route;`);
+        ORDER BY sb.bus_position;`);
         var active = true;
         if (scheduleRes.recordset.length > 0)
             active = scheduleRes.recordset[0].active
@@ -150,13 +150,11 @@ async function addBus(bus){
 async function deleteBus(bus){
     console.log(bus);
     try{
-        await sql.connect(adminConfig)
-        // query results from db
-        const res = await sql.query(`USE BusDismissal; DELETE FROM Buses WHERE bus_route = '${bus.route}' AND active = 1;`); // get active buses (buses that are in the current school year)
-        // assign query result to array
-        const buses = res.recordset;
-        // return results
-        return buses
+        const pool = await get('admin');
+        await pool.connect();
+        await pool.request()
+        .input('route', sql.VarChar, bus.route)
+        .query('USE BusDismissal; DELETE FROM Buses WHERE bus_route = @route AND active = 1;')
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -169,13 +167,14 @@ async function deleteBus(bus){
 // function to edit bus in db
 async function editBus(bus){
     try{
-        await sql.connect(adminConfig)
+        const pool = await get('admin');
+        await pool.connect();
+        await pool.request()
+        .input('updatedRoute', sql.VarChar, bus.updatedRoute)
+        .input('initRoute', sql.VarChar, bus.initRoute)
+        .query('USE BusDismissal; UPDATE Buses SET bus_route = @updatedRoute WHERE bus_route = @initRoute'); // get active buses (buses that are in the current school year)
         // query results from db
-        const res = await sql.query(`USE BusDismissal; UPDATE Buses SET bus_route = '${bus.updatedRoute}' WHERE bus_route = '${bus.initRoute}'`); // get active buses (buses that are in the current school year)
-        // assign query result to array
-        const buses = res.recordset;
-        // return results
-        return buses
+        await sql.query(`USE BusDismissal; UPDATE Buses SET bus_route = '${bus.updatedRoute}' WHERE bus_route = '${bus.initRoute}'`); // get active buses (buses that are in the current school year)
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -184,16 +183,14 @@ async function editBus(bus){
        conn.close();
    }*/
 }
+
 async function archiveList(){
     console.log("archive")
     try{
-        await sql.connect(adminConfig)
-        // query results from db
-        const res = await sql.query("USE BusDismissal; UPDATE Buses SET active = 0 WHERE active = 1;"); // get active buses (buses that are in the current school year)
-        // assign query result to array
-        const buses = res.recordset;
-        // return results
-        return buses
+        const pool = await get('admin');
+        await pool.connect();
+        const res = await pool.request()
+        .query("USE BusDismissal; UPDATE Buses SET active = 0 WHERE active = 1;"); // get active buses (buses that are in the current school year)
    } catch (err) {
        // handles errors
        console.log("An error has occured: ", err);
@@ -233,10 +230,10 @@ async function updateSchedule(buses, date){
                     .input('route', sql.VarChar, route)
                     .input('group', sql.VarChar, group)
                     .input('position', sql.VarChar, position)
-                    .query(`INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
+                    .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
                         VALUES ( \
-                        (SELECT id FROM Buses WHERE bus_route = @route AND active = 1 \
-                        @date, @group, @position);`)
+                        (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
+                        @date, @group, @position);')
                     const req = pool.request();
                 } else {
                     await pool.request()
