@@ -206,61 +206,118 @@ async function updateSchedule(buses, date){
     try{
         const pool = await get('admin');
         await pool.connect();
-        const res = await pool.request()
+        // check if schedule for that day exists
+        const schedule = await pool.request()
         .input('date', sql.Date, date)
-        .query('USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = @date;')
-        if(res.recordset.length == 0){
+        .query('SELECT * FROM Schedules WHERE schedule_date = @date;')
+        if(schedule.recordset.length == 0){
+            // create a schedule for that day
             await pool.request()
             .input('date', sql.Date, date)
-            .query('INSERT INTO Schedules(schedule_date) VALUES (@date);')
+            .query('INSERT INTO Schedules(schedule_date) \
+                VALUES(@date);')
         }
         buses.forEach(async function(bus){
-            const route = bus.route;
-            const group = bus.group;
-            const position = bus.position;
-            if(group != 'Holder'){
-                console.log('is not Holder')
-                var exists = await pool.request()
-                .input('route', sql.VarChar, route)
-                .input('date', sql.Date, date)
-                .query('SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1) AND schedule_date = @date')
-                if(exists.recordset.length == 0){
-                    console.log("need to create a new record");
-                    console.log('date: ', date)
+            switch(bus.method){
+                case 'insert':
+                    console.log('insert new bus')
+                    // insert new bus to schedule
                     await pool.request()
                     .input('date', sql.Date, date)
-                    .input('route', sql.VarChar, route)
-                    .input('group', sql.VarChar, group)
-                    .input('position', sql.VarChar, position)
+                    .input('route', sql.VarChar, bus.route)
+                    .input('group', sql.VarChar, bus.group)
+                    .input('position', sql.VarChar, bus.position)
                     .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
                         VALUES ( \
                         (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
                         @date, @group, @position);')
-                    const req = pool.request();
-                } else {
+                    break;
+                case 'update':
+                    console.log('update bus in schedule')
+                    // update existing bus' group and position
                     await pool.request()
-                    .input('route', sql.VarChar, route)
-                    .input('group', sql.VarChar, group)
-                    .input('position', sql.VarChar, position)
+                    .input('route', sql.VarChar, bus.route)
+                    .input('group', sql.VarChar, bus.group)
+                    .input('position', sql.VarChar, bus.position)
                     .query('UPDATE Scheduled_Buses \
                         SET bus_group = @group, bus_position = @position \
                         WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
-                }
-            } else if(route != true){
-                console.log('is holder')
-                await pool.request()
-                .input('date', sql.Date, date)
-                .input('route', sql.VarChar, route)
-                .query('DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
-                    AND bus_id=(SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
+                    break;
+                case 'delete':
+                    console.log('delete bus in schedule')
+                    // delete existing bus from schedule
+                    await pool.request()
+                    .input('date', sql.Date, date)
+                    .input('route', sql.VarChar, bus.route)
+                    .query('DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
+                        AND bus_id=(SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
+                    break;
             }
         })
-        console.log('SAVED')
-    } catch(err){
-        // handles errors
-       console.log("An error has occured: ", err);
+
+    } catch(err) {
+        console.log('An error has occured: ', err)
     }
 }
+// async function updateSchedule(buses, date){
+//     try{
+//         const pool = await get('admin');
+//         await pool.connect();
+//         const res = await pool.request()
+//         .input('date', sql.Date, date)
+//         .query('USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = @date;')
+//         if(res.recordset.length == 0){
+//             await pool.request()
+//             .input('date', sql.Date, date)
+//             .query('INSERT INTO Schedules(schedule_date) VALUES (@date);')
+//         }
+//         buses.forEach(async function(bus){
+//             const route = bus.route;
+//             const group = bus.group;
+//             const position = bus.position;
+//             if(group != 'Holder'){
+//                 console.log('is not Holder')
+//                 var exists = await pool.request()
+//                 .input('route', sql.VarChar, route)
+//                 .input('date', sql.Date, date)
+//                 .query('SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1) AND schedule_date = @date')
+//                 if(exists.recordset.length == 0){
+//                     console.log("need to create a new record");
+//                     console.log('date: ', date)
+//                     await pool.request()
+//                     .input('date', sql.Date, date)
+//                     .input('route', sql.VarChar, route)
+//                     .input('group', sql.VarChar, group)
+//                     .input('position', sql.VarChar, position)
+//                     .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
+//                         VALUES ( \
+//                         (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
+//                         @date, @group, @position);')
+//                     const req = pool.request();
+//                 } else {
+//                     await pool.request()
+//                     .input('route', sql.VarChar, route)
+//                     .input('group', sql.VarChar, group)
+//                     .input('position', sql.VarChar, position)
+//                     .query('UPDATE Scheduled_Buses \
+//                         SET bus_group = @group, bus_position = @position \
+//                         WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
+//                 }
+//             } else if(route != true){
+//                 console.log('is holder')
+//                 await pool.request()
+//                 .input('date', sql.Date, date)
+//                 .input('route', sql.VarChar, route)
+//                 .query('DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
+//                     AND bus_id=(SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
+//             }
+//         })
+//         console.log('SAVED')
+//     } catch(err){
+//         // handles errors
+//        console.log("An error has occured: ", err);
+//     }
+// }
 // async function updateSchedule(buses, date){
 //     try{
 //         await sql.connect(adminConfig)

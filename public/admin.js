@@ -14,11 +14,6 @@ function createDragDrop(){
     document.getElementById("editingButton").addEventListener("click", function(){
         // enable sortable by adding draggable class
         const busDivs = document.getElementsByClassName("bus");
-        const holders = document.getElementById('busesHolderSort').children
-        holderBuses = [];
-        for(var i = 0; i < holders.length; i++){
-            holderBuses.push(holders[i].textContent)
-        }
         if(this.textContent.includes("Enable")){
             this.textContent = "Finish Editing";
             for(var i = 0; i < busDivs.length; i++){
@@ -37,6 +32,11 @@ function createDragDrop(){
         }
     })
     document.getElementsByClassName("saveButton")[0].addEventListener("click", function(){
+        const holders = document.getElementById('busesHolderSort').children
+        holderBuses = [];
+        for(var i = 0; i < holders.length; i++){
+            holderBuses.push(holders[i].textContent)
+        }
         console.log("====buses to save:=====");
         console.log(buses);
         if(buses.length > 0)
@@ -145,22 +145,32 @@ function createDragDrop(){
                     console.log('section: ', section);
                     console.log('new index: ', index)
                     
-                    for(var i = index; i < sectionList.length; i++){
-                        console.log(Array.from(sectionList)[i]);
-                        const route = sectionList[i].textContent;
-                        const position = [section, i].join('-');
-                        var method = holderBuses.includes(route) ? 'insert' : 'update'
-                        
-
-                        console.log('route: ', route);
-                        console.log('position: ', position);
-                        console.log('method: ', method)
-
+                    if(ev.to.parentNode.getAttribute('name') != 'Holder'){
+                        for(var i = index; i < sectionList.length; i++){
+                            console.log(Array.from(sectionList)[i]);
+                            const route = sectionList[i].textContent;
+                            const position = [section, i].join('-');
+                            var method = holderBuses.includes(route) ? 'insert' : 'update'
+    
+                            console.log('route: ', route);
+                            console.log('position: ', position);
+                            console.log('method: ', method)
+    
+                            const bus = {
+                                route : route,
+                                group : group,
+                                position: position,
+                                method: method
+                            }
+                            buses.push(bus);
+                            console.log('buses: ', buses)
+                        }
+                    } else {
+                        console.log('is holder')
+                        console.log('holder route: ', ev.item.textContent)
                         const bus = {
-                            route : route,
-                            group : group,
-                            position: position,
-                            method: method
+                            route : ev.item.textContent,
+                            method : 'delete'
                         }
                         buses.push(bus);
                         console.log('buses: ', buses)
