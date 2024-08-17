@@ -4,6 +4,7 @@ var buses = [];
 var timeModified = false;
 var notesModified = false;
 var holderBuses = [];
+var routes = {};
 window.addEventListener('load', createDragDrop);
 // create drag-and-drop divs
 function createDragDrop(){
@@ -34,6 +35,7 @@ function createDragDrop(){
     document.getElementsByClassName("saveButton")[0].addEventListener("click", function(){
         const holders = document.getElementById('busesHolderSort').children
         holderBuses = [];
+        routes = {};
         for(var i = 0; i < holders.length; i++){
             holderBuses.push(holders[i].textContent)
         }
@@ -70,6 +72,8 @@ function createDragDrop(){
         console.log("Date changed to: " + scheduleDate);
         // change editing button
         document.getElementById("editingButton").textContent = "Enable Editing";
+        // set holder buses to empty
+        holderBuses = [];
         if(scheduleDate.length > 0){
             // clear buses div
             const busDivs = document.getElementsByClassName("bus");
@@ -110,19 +114,16 @@ function createDragDrop(){
     // create drag and drop boards
     const sections = document.getElementsByClassName("section");
     for(var i = 0; i < sections.length; i++){
-        var sort = true;
-        if(i == 0)
-            sort = false;
         new Sortable(sections[i], {
             group: "shared",
-            sort: sort,
+            sort: i != 0,
             swapThreshold: 2,
             animation: 150,
             filter: ".inactive",
             draggable: ".drag",
             scroll: true,
             scrollSensitivity: 100,
-            scrollSpeed: 10,
+            
             // ***REMOVED*** prevent bus divs to be put back in buses holder
             // onMove: function onMove(ev){
             //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
@@ -145,25 +146,41 @@ function createDragDrop(){
                     console.log('section: ', section);
                     console.log('new index: ', index)
                     
+                    // get all buses in the section just updated
                     if(ev.to.parentNode.getAttribute('name') != 'Holder'){
                         for(var i = index; i < sectionList.length; i++){
                             console.log(Array.from(sectionList)[i]);
                             const route = sectionList[i].textContent;
                             const position = [section, i].join('-');
+                            // check if buses holder contain the bus, if yes, insert bus, if not, update bus
                             var method = holderBuses.includes(route) ? 'insert' : 'update'
     
                             console.log('route: ', route);
                             console.log('position: ', position);
                             console.log('method: ', method)
-    
+                            console.log('holder buses: ')
+                            console.log(holderBuses);
+
+                            console.log('routes list:')
+                            console.log(routes)
+
                             const bus = {
                                 route : route,
                                 group : group,
                                 position: position,
                                 method: method
                             }
-                            buses.push(bus);
-                            console.log('buses: ', buses)
+                            // find bus in list
+                            if(routes[route] == undefined){
+                                console.log(`route ${route} not in list yet`)
+                                routes[route] = buses.length
+                                buses.push(bus);
+                                console.log('buses: ', buses)
+                            } else {
+                                console.log(`replace bus ${route} in list`)
+                                // change bus info in list
+                                buses[routes[route]] = bus;
+                            }
                         }
                     } else {
                         console.log('is holder')
@@ -176,86 +193,6 @@ function createDragDrop(){
                         console.log('buses: ', buses)
                     }
                 }
-                // if(ev.to != ev.from || ev.newIndex != ev.oldIndex){
-                //     document.getElementById("saveStatus").textContent = "";
-
-                //     const group = ev.to.parentNode.getAttribute("name");
-                //     const section = ev.to.className.substring(ev.to.className.indexOf("section ")+"section ".length, ev.to.className.length);
-                //     var sectionList = ev.to.children;
-                //     const index = ev.newIndex;
-                    
-                //     console.log()
-                //     console.log(sectionList);
-                //         for(var i = index; i < sectionList.length; i++){
-                //             console.log(Array.from(sectionList)[i]);
-                //             const route = sectionList[i].textContent;
-                //             const position = [section, i].join("-");
-                //             var routeFound = false;
-                //             for(var j = 0; j < buses.length; j++){
-                //                 console.log(buses[j]);
-                //                 if(buses[j].route == route){
-                //                     buses[j].position = position;
-                //                     buses[j].group = group;
-                //                     routeFound = true;
-                //                     break;
-                //                 }
-                //             }
-                //             if (!routeFound){
-                //                 console.log("added route");
-                //                 buses.push({
-                //                     route : route,
-                //                     position : position,
-                //                     group : group,
-                //                 });
-                //             }
-                //         }
-                //     console.log(buses);
-                //     if(ev.from != ev.to){
-                //         console.log("Old parent node: ");
-                //         var sectionList = ev.from.children;
-                //         const group = ev.from.parentNode.getAttribute("name");
-                //         const section = ev.from.className.split(" ")[1];
-                //         console.log(ev.from);
-                //         console.log("old index: " + ev.oldIndex);
-                //         for(var i = ev.oldIndex + 1; i < sectionList.length; i++){
-                //             console.log('grouP: ', group)
-                //             console.log(sectionList[i].textContent)
-                //             const route = group != sectionList[i].textContent;
-                //             const position = group != [section, i].join("-");
-                //             console.log("buses.length: " + buses.length);
-                //             var routeFound = false;
-                //             for(var j = 0; j < buses.length; j++){
-                //                 console.log(buses[j]);
-                //                 if(buses[j].route == route){
-                //                     console.log("updated route");
-                //                     buses[j].position = position;
-                //                     buses[j].group = group;
-                //                     routeFound = true;
-                //                     console.log(buses);
-                //                     break;
-                //                 }
-                //             }
-                //             if (!routeFound){
-                //                 console.log("added route");
-                //                 buses.push({
-                //                     route : route,
-                //                     position : position,
-                //                     group : group,
-                //                 });
-                //             }
-                //         }
-                //         console.log(buses);
-                //     }
-                //     // timeout = setTimeout(function(){
-                //     //     document.getElementById("saveStatus").textContent = "Saved!";
-                //     //     // save buses' positions to db
-                //     //     if(buses.length > 0){
-                //     //         writeDb(buses, datePicker.value);
-                //     //     }
-                //     //     console.log(buses);
-                //     //     buses = [];
-                //     // }, 1000)
-                // }
             },
         })
     }
@@ -275,7 +212,6 @@ function formatDate(date){
 // function to display bus numbers on screen
 function displayBuses(buses, schedules){
     schedules.forEach(bus => {
-        console.log(bus.bus_route);
         var className = "bus";
         if(bus.active == false){
             className = "inactive bus";
@@ -284,8 +220,6 @@ function displayBuses(buses, schedules){
         }
         const busDiv = createBus(bus.bus_route, className);
         const group = document.getElementById(bus.bus_group + "Sort");
-        console.log(bus.bus_position);
-        console.log(bus.bus_group);
         if(bus.bus_group != "NHY"){
             const section = group.getElementsByClassName(bus.bus_position.split("-")[0])[0];
             section.appendChild(busDiv);
@@ -297,6 +231,7 @@ function displayBuses(buses, schedules){
     const busesHolder = document.getElementById("busesHolder").getElementsByClassName("section")[0]; // add to section div inside the holder div
     buses.forEach((bus) => {
         busesHolder.appendChild(createBus(bus.bus_route));
+        console.log('bus holder route ', bus)
         holderBuses.push(bus.bus_route)
     })
     

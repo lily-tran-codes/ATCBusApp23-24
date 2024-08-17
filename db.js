@@ -222,16 +222,30 @@ async function updateSchedule(buses, date){
                 case 'insert':
                     console.log('insert new bus')
                     // insert new bus to schedule
-                    await pool.request()
-                    .input('date', sql.Date, date)
-                    .input('route', sql.VarChar, bus.route)
-                    .input('group', sql.VarChar, bus.group)
-                    .input('position', sql.VarChar, bus.position)
-                    .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
-                        VALUES ( \
-                        (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
-                        @date, @group, @position);')
-                    break;
+                    try{
+                        await pool.request()
+                        .input('date', sql.Date, date)
+                        .input('route', sql.VarChar, bus.route)
+                        .input('group', sql.VarChar, bus.group)
+                        .input('position', sql.VarChar, bus.position)
+                        .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
+                            VALUES ( \
+                            (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
+                            @date, @group, @position);')
+                    } catch(err) {
+                        console.log('Error occured on INSERT: ', err);
+                        // try updating
+                        await pool.request()
+                        .input('route', sql.VarChar, bus.route)
+                        .input('group', sql.VarChar, bus.group)
+                        .input('position', sql.VarChar, bus.position)
+                        .query('UPDATE Scheduled_Buses \
+                            SET bus_group = @group, bus_position = @position \
+                            WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
+                    } finally {
+                        break;
+                    }
+                    
                 case 'update':
                     console.log('update bus in schedule')
                     // update existing bus' group and position
@@ -439,11 +453,10 @@ async function getStudentSchedule(date){
         AND s.schedule_date = sb.schedule_date \
         AND sb.schedule_date = @date\
         ORDER BY sb.bus_position;')
-        console.log('data:')
+        console.log('Getting student\'s view data')
         const notes = await pool.request()
         .input('date', sql.Date, date)
         .query('SELECT notes FROM Schedules WHERE schedule_date = @date;')
-        console.log(schedule.recordset)
         return {schedule : schedule.recordset, notes : notes.recordset}
     } catch(err){
         // handles errors
