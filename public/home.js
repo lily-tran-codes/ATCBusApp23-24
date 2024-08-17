@@ -62,7 +62,14 @@ socket.on('updated schedule', () => {
     document.getElementById('schedule').innerHTML = emptySchedule;
     getSchedule();
 })
+socket.emit('student joined')
+// get schedule when page finishes loading
 window.addEventListener('load', getSchedule);
+// emit event to notify a user has left when page is closed
+window.addEventListener('beforeunload', function(e){
+    e.preventDefault();
+    socket.emit('student left')
+})
 
 function formatDate(date){
     var today = new Date(date),

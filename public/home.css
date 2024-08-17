@@ -13,6 +13,12 @@ body{
     text-align: center;
     padding-top: 10%;
 }
+#schedule{
+    margin-bottom: 200px;
+}
+#usersCount{
+    margin: 50px;
+}
 /*div containing divs for bus lists*/
 .bus-block{
     padding: 10px;

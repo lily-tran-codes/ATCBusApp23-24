@@ -17,12 +17,27 @@ const port = process.env.PORT;
 const db = require('./db');
 
 io.on('connection', (socket) => {
-    console.log('user logged in')
+    console.log('user connected')
     socket.on('update schedule', (date) => {
         console.log('schedule updated for:');
         console.log(date)
         // broadcast for all sockets
         io.emit('updated schedule')
+    })
+    socket.on('student joined', function(){
+        console.log('A student has joined')
+        socket.join('students');
+        console.log('Number of students connected:', io.sockets.adapter.rooms.get('students').size)
+    })
+    socket.on('student left', function(){
+        const room = io.sockets.adapter.rooms.get('students')
+        console.log('A student has left')
+        socket.leave('students');
+        if(room != undefined){
+            console.log('Number of students connected:', room.size)
+        } else {
+            console.log('Room has closed')
+        }
     })
 })
 
