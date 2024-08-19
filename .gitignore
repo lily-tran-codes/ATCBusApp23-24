@@ -1,3 +1,4 @@
 node_modules
 *.env
-mssql-data/
+mssql-data
+envs

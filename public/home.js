@@ -101,6 +101,7 @@ async function getSchedule(){
         date: date,
         user: 'student'
     }));
+    console.log(response)
     const schedule = await response.json();
     console.log(schedule);
     // check if schedule is empty
