@@ -81,10 +81,13 @@ input[type='search']{
 }
 /* logo */
 .logo{
-    float: left;
     margin: 5px;
+    float: left;
+    margin: 0;
+    top: 50%;
     height: 50px;
     width: 47.5px;
+    padding: 20px 10px;
 }
 .logo img{
     width: 100%;
@@ -139,6 +142,10 @@ input[type='search']{
     padding: 15px 5px;
     margin-right: 5px;
   }
+  #currentUsers{
+    text-align: center;
+    margin: 50px;
+  }
 @media screen and (max-device-width: 800px){
     input{
         font-size: 30px !important;
@@ -151,22 +158,25 @@ input[type='search']{
         padding: 1.5% 10px  !important;
     }
     .topnav a {
-        font-size: 30px !important;
+        font-size: 40px !important;
     }
     .topnav{
-        max-height: 65px !important;
+        max-height: fit-content !important;
     }
     h1{
-        font-size: 70px;
+        font-size: 70pt;
     }
     .busesDiv{
-        font-size: 70px;
         display: block;
         width: 90%;
         padding: 50px;
     }
     .bus{
+        font-size: 60pt;
         margin: 15px;
+    }
+    .divider{
+        font-size: 40pt;
     }
   }
 @media screen and (max-width: 800px){

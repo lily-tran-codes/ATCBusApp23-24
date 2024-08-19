@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const { closeAll } = require('./pool-manager')
-const bodyParser = require('body-parser')
 const {createServer} = require('http')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
 // socket.io for live changes
