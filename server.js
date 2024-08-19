@@ -27,26 +27,34 @@ io.on('connection', (socket) => {
     })
     // send the number of users in room to client
     socket.on('student joined', function(){
-        console.log('A student has joined')
-        socket.join('students');
-        console.log('Number of students connected:', io.sockets.adapter.rooms.get('students').size)
-        // emit event to client
-        io.to('students').emit('count changed', io.sockets.adapter.rooms.get('students').size);
+        try{
+            console.log('A student has joined')
+            socket.join('students');
+            console.log('Number of students connected:', io.sockets.adapter.rooms.get('students').size)
+            // emit event to client
+            io.to('students').emit('count changed', io.sockets.adapter.rooms.get('students').size);
+        } catch(err){
+            console.log('An error occured: ', err)
+        }
     })
     // send the number of users in room to client
     socket.on('student left', function(){
-        const room = io.sockets.adapter.rooms.get('students')
-        console.log('A student has left')
-        socket.leave('students');
-        if(room != undefined){
-            console.log('Number of students connected:', room.size)
-            // emit event to client
-            io.to('students').emit('count changed', room.size);
-        } else {
-            console.log('Room has closed')
-            // emit event to client
-            io.to('students').emit('count changed', 0)
-        }
+        try{
+            const room = io.sockets.adapter.rooms.get('students')
+            console.log('A student has left')
+            socket.leave('students');
+            if(room != undefined){
+                console.log('Number of students connected:', room.size)
+                // emit event to client
+                io.to('students').emit('count changed', room.size);
+            } else {
+                console.log('Room has closed')
+                // emit event to client
+                io.to('students').emit('count changed', 0)
+            }
+        } catch(err){
+            console.log('An error occured: ', err);
+        }        
     })
 })
 
