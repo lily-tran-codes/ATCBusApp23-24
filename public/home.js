@@ -63,6 +63,7 @@ socket.on('updated schedule', () => {
         // clear out current schedule
         document.getElementById('schedule').innerHTML = emptySchedule;
         getSchedule();
+        
     }, 1000)
 })
 socket.on('cleared schedule', () => {
@@ -84,7 +85,7 @@ socket.on('count changed', (count) => {
 // get schedule when page finishes loading
 window.addEventListener('load', function(){
     // set loader to visible
-    document.getElementById('loader').classList.toggle('hidden')
+    document.getElementById('loader').classList.remove('hidden')
     getSchedule();
 });
 // emit event to notify server a user has left when page is closed
@@ -129,13 +130,12 @@ async function getSchedule(){
             busesDivs[i].classList.remove("hidden");
         }
         displaySchedule(schedule);
-        console.log(document.getElementById('loader'))
-        document.getElementById('loader').classList.toggle('hidden')
     } else {
         // unhide noSchedule message
         const noSchedule = document.getElementsByClassName('noSchedule')[0]
         noSchedule.classList.remove('hidden')
-}
+    }
+    document.getElementById('loader').classList.add('hidden')
 }
 
 function displaySchedule(data){
