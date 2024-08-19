@@ -63,9 +63,15 @@ socket.on('updated schedule', () => {
     getSchedule();
 })
 socket.emit('student joined')
+socket.on('count changed', (count) => {
+    console.log('A user connected')
+    const usersCount = document.getElementById('usersCount')
+    console.log(usersCount)
+    usersCount.textContent = count
+})
 // get schedule when page finishes loading
 window.addEventListener('load', getSchedule);
-// emit event to notify a user has left when page is closed
+// emit event to notify server a user has left when page is closed
 window.addEventListener('beforeunload', function(e){
     e.preventDefault();
     socket.emit('student left')
