@@ -19,11 +19,18 @@ const db = require('./db');
 
 io.on('connection', (socket) => {
     console.log('user connected')
-    socket.on('update schedule', (date) => {
-        console.log('schedule updated for:');
-        console.log(date)
+    socket.on('update schedule', () => {
+        console.log('schedule updated for today');
         // broadcast for all sockets
         io.emit('updated schedule')
+    })
+    socket.on('clear schedule', () => {
+        console.log('schedule cleared for today');
+        io.emit('cleared schedule');
+    })
+    socket.on('update info', (notes) => {
+        console.log('info updated for today')
+        io.emit('updated info', notes)
     })
     // send the number of users in room to client
     socket.on('student joined', function(){

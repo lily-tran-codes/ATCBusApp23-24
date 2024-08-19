@@ -58,9 +58,21 @@ const emptySchedule = '<div class="noSchedule hidden">\
     </body>'
 
 socket.on('updated schedule', () => {
-    // clear out current schedule
+    setTimeout(() => {
+        console.log('schedule updated')
+        // clear out current schedule
+        document.getElementById('schedule').innerHTML = emptySchedule;
+        getSchedule();
+    }, 1000)
+})
+socket.on('cleared schedule', () => {
+    console.log('scheduled clear')
     document.getElementById('schedule').innerHTML = emptySchedule;
-    getSchedule();
+    const noSchedule = document.getElementsByClassName('noSchedule')[0]
+    noSchedule.classList.remove('hidden')
+})
+socket.on('updated info', (notes) => {
+    document.getElementById("changesNotes").textContent = notes;
 })
 socket.emit('student joined')
 socket.on('count changed', (count) => {
@@ -70,7 +82,11 @@ socket.on('count changed', (count) => {
     usersCount.textContent = count
 })
 // get schedule when page finishes loading
-window.addEventListener('load', getSchedule);
+window.addEventListener('load', function(){
+    // set loader to visible
+    document.getElementById('loader').classList.toggle('hidden')
+    getSchedule();
+});
 // emit event to notify server a user has left when page is closed
 window.addEventListener('beforeunload', function(e){
     e.preventDefault();
@@ -113,6 +129,8 @@ async function getSchedule(){
             busesDivs[i].classList.remove("hidden");
         }
         displaySchedule(schedule);
+        console.log(document.getElementById('loader'))
+        document.getElementById('loader').classList.toggle('hidden')
     } else {
         // unhide noSchedule message
         const noSchedule = document.getElementsByClassName('noSchedule')[0]
@@ -139,7 +157,7 @@ function displaySchedule(data){
             group.appendChild(busDiv);
         }
     })
-    document.getElementById("changesNotes").textContent = notes ;
+    document.getElementById("changesNotes").textContent = notes;
 }
 // function to make bus divs
 function createBus(route, className="bus"){
@@ -163,8 +181,4 @@ function searchBus(){
             bus.innerHTML = route;
         }
     }
-}
-// function to reset schedule
-function resetSchedule(){
-    
 }

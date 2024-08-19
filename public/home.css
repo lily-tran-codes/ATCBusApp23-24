@@ -143,7 +143,14 @@ input[type='search']{
     text-align: center;
     margin: 50px;
   }
+  #loader{
+    text-align: center;
+    padding: 50px;
+  }
 @media screen and (max-device-width: 800px){
+    #loader img{
+        height: 100px;
+    }
     input{
         font-size: 30px !important;
         border-radius: 10px;

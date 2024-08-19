@@ -254,6 +254,10 @@ async function clearSchedule(){
             }
         })
         location.reload();
+        // emit events to the server
+        if(formatDate(new Date()) == date){
+            socket.emit('clear schedule', date);
+        }
     }
 }
 // function to make bus divs
@@ -276,6 +280,10 @@ async function writeSchedule(date, info){
         },
         body: JSON.stringify(info)
     })
+    // emit events to the server
+    if(formatDate(new Date()) == date){
+        socket.emit('update info', info.notes);
+    }
 }
 // function to save buses
 async function writeDb(buses, date){
