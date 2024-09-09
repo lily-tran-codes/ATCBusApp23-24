@@ -6,6 +6,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "mssql": "^10.0.4",
+    "muuri": "^0.9.5",
     "node-session": "^1.2.1"
   },
   "scripts": {

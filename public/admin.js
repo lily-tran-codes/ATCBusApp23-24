@@ -1,5 +1,6 @@
 // var timeout  = setTimeout(function(){}, 0);
 // var inputTimeout = setTimeout(function(){}, 0);
+const muuri = require
 var buses = [];
 var timeModified = false;
 var notesModified = false;
@@ -113,89 +114,90 @@ function createDragDrop(){
     })
     // create drag and drop boards
     const sections = document.getElementsByClassName("section");
-    for(var i = 0; i < sections.length; i++){
-        new Sortable(sections[i], {
-            group: "shared",
-            sort: i != 0,
-            swapThreshold: 2,
-            animation: 150,
-            filter: ".inactive",
-            draggable: ".drag",
-            scroll: true,
-            scrollSensitivity: 100,
+    var grid = new Muuri('.section');
+    // for(var i = 0; i < sections.length; i++){
+    //     new Sortable(sections[i], {
+    //         group: "shared",
+    //         sort: i != 0,
+    //         swapThreshold: 2,
+    //         animation: 150,
+    //         filter: ".inactive",
+    //         draggable: ".drag",
+    //         scroll: true,
+    //         scrollSensitivity: 100,
             
-            // ***REMOVED*** prevent bus divs to be put back in buses holder
-            // onMove: function onMove(ev){
-            //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
-            //         return false;
-            //     }
-            // },
-            // save schedule when drag and drop ends
-            onEnd: function save(ev){
-                // check if location is different
-                if(ev.to != ev.from || ev.newIndex != ev.oldIndex){
-                    // change save status to unsaved (blank)
-                    document.getElementById('saveStatus').textContent = '';
-                    const group = ev.to.parentNode.getAttribute('name');
-                    const section = ev.to.className.substring(ev.to.className.indexOf('section ') + 'section '.length, ev.to.className.length)
-                    var sectionList = ev.to.children;
-                    const index = ev.newIndex;
+    //         // ***REMOVED*** prevent bus divs to be put back in buses holder
+    //         // onMove: function onMove(ev){
+    //         //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
+    //         //         return false;
+    //         //     }
+    //         // },
+    //         // save schedule when drag and drop ends
+    //         onEnd: function save(ev){
+    //             // check if location is different
+    //             if(ev.to != ev.from || ev.newIndex != ev.oldIndex){
+    //                 // change save status to unsaved (blank)
+    //                 document.getElementById('saveStatus').textContent = '';
+    //                 const group = ev.to.parentNode.getAttribute('name');
+    //                 const section = ev.to.className.substring(ev.to.className.indexOf('section ') + 'section '.length, ev.to.className.length)
+    //                 var sectionList = ev.to.children;
+    //                 const index = ev.newIndex;
                     
-                    console.log(ev)
-                    console.log('group: ', group);
-                    console.log('section: ', section);
-                    console.log('new index: ', index)
+    //                 console.log(ev)
+    //                 console.log('group: ', group);
+    //                 console.log('section: ', section);
+    //                 console.log('new index: ', index)
                     
-                    // get all buses in the section just updated
-                    if(ev.to.parentNode.getAttribute('name') != 'Holder'){
-                        for(var i = index; i < sectionList.length; i++){
-                            console.log(Array.from(sectionList)[i]);
-                            const route = sectionList[i].textContent;
-                            const position = [section, i].join('-');
-                            // check if buses holder contain the bus, if yes, insert bus, if not, update bus
-                            var method = holderBuses.includes(route) ? 'insert' : 'update'
+    //                 // get all buses in the section just updated
+    //                 if(ev.to.parentNode.getAttribute('name') != 'Holder'){
+    //                     for(var i = index; i < sectionList.length; i++){
+    //                         console.log(Array.from(sectionList)[i]);
+    //                         const route = sectionList[i].textContent;
+    //                         const position = [section, i].join('-');
+    //                         // check if buses holder contain the bus, if yes, insert bus, if not, update bus
+    //                         var method = holderBuses.includes(route) ? 'insert' : 'update'
     
-                            console.log('route: ', route);
-                            console.log('position: ', position);
-                            console.log('method: ', method)
-                            console.log('holder buses: ')
-                            console.log(holderBuses);
+    //                         console.log('route: ', route);
+    //                         console.log('position: ', position);
+    //                         console.log('method: ', method)
+    //                         console.log('holder buses: ')
+    //                         console.log(holderBuses);
 
-                            console.log('routes list:')
-                            console.log(routes)
+    //                         console.log('routes list:')
+    //                         console.log(routes)
 
-                            const bus = {
-                                route : route,
-                                group : group,
-                                position: position,
-                                method: method
-                            }
-                            // find bus in list
-                            if(routes[route] == undefined){
-                                console.log(`route ${route} not in list yet`)
-                                routes[route] = buses.length
-                                buses.push(bus);
-                                console.log('buses: ', buses)
-                            } else {
-                                console.log(`replace bus ${route} in list`)
-                                // change bus info in list
-                                buses[routes[route]] = bus;
-                            }
-                        }
-                    } else {
-                        console.log('is holder')
-                        console.log('holder route: ', ev.item.textContent)
-                        const bus = {
-                            route : ev.item.textContent,
-                            method : 'delete'
-                        }
-                        buses.push(bus);
-                        console.log('buses: ', buses)
-                    }
-                }
-            },
-        })
-    }
+    //                         const bus = {
+    //                             route : route,
+    //                             group : group,
+    //                             position: position,
+    //                             method: method
+    //                         }
+    //                         // find bus in list
+    //                         if(routes[route] == undefined){
+    //                             console.log(`route ${route} not in list yet`)
+    //                             routes[route] = buses.length
+    //                             buses.push(bus);
+    //                             console.log('buses: ', buses)
+    //                         } else {
+    //                             console.log(`replace bus ${route} in list`)
+    //                             // change bus info in list
+    //                             buses[routes[route]] = bus;
+    //                         }
+    //                     }
+    //                 } else {
+    //                     console.log('is holder')
+    //                     console.log('holder route: ', ev.item.textContent)
+    //                     const bus = {
+    //                         route : ev.item.textContent,
+    //                         method : 'delete'
+    //                     }
+    //                     buses.push(bus);
+    //                     console.log('buses: ', buses)
+    //                 }
+    //             }
+    //         },
+    //     })
+    // }
 }
 // function to format date into correct format
 function formatDate(date){
@@ -256,8 +258,11 @@ async function clearSchedule(){
 }
 // function to make bus divs
 function createBus(route, className="bus"){
+    const busContent = document.createElement('div')
+    busContent.className = 'busContent'
     const busDiv = document.createElement('div');
-    busDiv.textContent = route;
+    busContent.textContent = route;
+    busDiv.append(busContent)
     console.log(className);
     busDiv.className = className;
     return busDiv;
