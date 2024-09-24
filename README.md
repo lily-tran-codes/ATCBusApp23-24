@@ -149,4 +149,4 @@ docker-compose up
     ![pull origin](Documentation/images/pull-origin.png)
 # Roadmap
 [ ] LDAP
-[ ] HTML template system for page icons
+[ ] Button to change to NHY instead of column for drag and drop
