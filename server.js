@@ -3,14 +3,70 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const { closeAll } = require('./pool-manager')
+const {createServer} = require('http')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
+// socket.io for live changes
+const {Server} = require('socket.io')
 
+// initialize app to handle functions
 const app = express();
+// server that get supplied from the app
+const server = createServer(app);
+// initialize instance of socket.io
+const io = new Server(server);
 const port = process.env.PORT;
 const db = require('./db');
 
+io.on('connection', (socket) => {
+    console.log('user connected')
+    socket.on('update schedule', () => {
+        console.log('schedule updated for today');
+        // broadcast for all sockets
+        io.emit('updated schedule')
+    })
+    socket.on('clear schedule', () => {
+        console.log('schedule cleared for today');
+        io.emit('cleared schedule');
+    })
+    socket.on('update info', (notes) => {
+        console.log('info updated for today')
+        io.emit('updated info', notes)
+    })
+    // send the number of users in room to client
+    socket.on('student joined', function(){
+        try{
+            console.log('A student has joined')
+            socket.join('students');
+            console.log('Number of students connected:', io.sockets.adapter.rooms.get('students').size)
+            // emit event to client
+            io.to('students').emit('count changed', io.sockets.adapter.rooms.get('students').size);
+        } catch(err){
+            console.log('An error occured: ', err)
+        }
+    })
+    // send the number of users in room to client
+    socket.on('student left', function(){
+        try{
+            const room = io.sockets.adapter.rooms.get('students')
+            console.log('A student has left')
+            socket.leave('students');
+            if(room != undefined){
+                console.log('Number of students connected:', room.size)
+                // emit event to client
+                io.to('students').emit('count changed', room.size);
+            } else {
+                console.log('Room has closed')
+                // emit event to client
+                io.to('students').emit('count changed', 0)
+            }
+        } catch(err){
+            console.log('An error occured: ', err);
+        }        
+    })
+})
+
 // set server to port
-app.listen(port, function (err) {
+server.listen(port, function (err) {
     if (err)
         console.log(err);
     console.log("Server listening on PORT", port);
@@ -42,6 +98,7 @@ app.use(session({
     }
 }))
 
+// **** route handlers ****
 // serve HTML page (GET)
 app.get('/admin', (req, res) => {
     if(req.session.username == null){

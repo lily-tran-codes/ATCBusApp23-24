@@ -1,9 +1,99 @@
+const socket = io();
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const emptySchedule = '<div class="noSchedule hidden">\
+        <h1>No Bus Schedules Today</h1>\
+        </div>\
+        <div class="busesDiv hidden">\
+            <h1><u>Outside Buses</u></h1>\
+            <div class="buses" id="OutsideBuses" name="Outside">\
+                <div class="section 1">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Drive</div>\
+                <div class="section 2">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Stop Sign</div>\
+                <div class="section 3">\
+                    <!--Bus divs go here-->\
+                </div>\
+                <div class="divider">Walk</div>\
+                <div class="section 4">\
+                    <!--Bus divs go here-->\
+                </div>\
+            </div>\
+        </div>\
+        <div class="busesDiv hidden">\
+            <h1><u>Inside Buses</u></h1>\
+                <div class="buses" id="InsideBuses" name="Inside">\
+                    <div class="section 1">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Drive</div>\
+                    <div class="section 2">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Stop Sign</div>\
+                    <div class="section 3">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                    <div class="divider">Walk</div>\
+                    <div class="section 4">\
+                        <!--Bus divs go here-->\
+                    </div>\
+                </div>\
+        </div>\
+        <div class="busesDiv hidden" name="NHY">\
+            <h1><u>NHY</u></h1>\
+            <div class="buses section 0" id="NHYBuses">\
+                <!--bus divs go here-->\
+            </div>\
+        </div>\
+        <div class="busesDiv hidden" id="BusChanges" name="Changes">\
+            <h1><u>Changes</u></h1>\
+            <div class="changes">\
+                <p id="changesNotes" style="font-family:monospace;"></p>\
+            </div>\
+        </div>\
+    </body>'
 
-window.addEventListener('load', getSchedule);
-window.setTimeout(function(){
-    window.location.reload();
-}, 60000)
+socket.on('updated schedule', () => {
+    setTimeout(() => {
+        console.log('schedule updated')
+        // clear out current schedule
+        document.getElementById('schedule').innerHTML = emptySchedule;
+        getSchedule();
+        
+    }, 1000)
+})
+socket.on('cleared schedule', () => {
+    console.log('scheduled clear')
+    document.getElementById('schedule').innerHTML = emptySchedule;
+    const noSchedule = document.getElementsByClassName('noSchedule')[0]
+    noSchedule.classList.remove('hidden')
+})
+socket.on('updated info', (notes) => {
+    document.getElementById("changesNotes").textContent = notes;
+})
+socket.emit('student joined')
+socket.on('count changed', (count) => {
+    console.log('A user connected')
+    const usersCount = document.getElementById('usersCount')
+    console.log(usersCount)
+    usersCount.textContent = count
+})
+// get schedule when page finishes loading
+window.addEventListener('load', function(){
+    // set loader to visible
+    document.getElementById('loader').classList.remove('hidden')
+    getSchedule();
+});
+// emit event to notify server a user has left when page is closed
+window.addEventListener('beforeunload', function(e){
+    e.preventDefault();
+    socket.emit('student left')
+})
+
 function formatDate(date){
     var today = new Date(date),
         month = '' + (today.getMonth()+1),
@@ -44,7 +134,8 @@ async function getSchedule(){
         // unhide noSchedule message
         const noSchedule = document.getElementsByClassName('noSchedule')[0]
         noSchedule.classList.remove('hidden')
-}
+    }
+    document.getElementById('loader').classList.add('hidden')
 }
 
 function displaySchedule(data){
@@ -66,7 +157,7 @@ function displaySchedule(data){
             group.appendChild(busDiv);
         }
     })
-    document.getElementById("changesNotes").textContent = notes ;
+    document.getElementById("changesNotes").textContent = notes;
 }
 // function to make bus divs
 function createBus(route, className="bus"){

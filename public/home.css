@@ -13,6 +13,12 @@ body{
     text-align: center;
     padding-top: 10%;
 }
+#schedule{
+    margin-bottom: 200px;
+}
+#usersCount{
+    margin: 50px;
+}
 /*div containing divs for bus lists*/
 .bus-block{
     padding: 10px;
@@ -133,7 +139,18 @@ input[type='search']{
     padding: 15px 5px;
     margin-right: 5px;
   }
+  #currentUsers{
+    text-align: center;
+    margin: 50px;
+  }
+  #loader{
+    text-align: center;
+    padding: 50px;
+  }
 @media screen and (max-device-width: 800px){
+    #loader img{
+        height: 100px;
+    }
     input{
         font-size: 30px !important;
         border-radius: 10px;
@@ -145,22 +162,29 @@ input[type='search']{
         padding: 1.5% 10px  !important;
     }
     .topnav a {
-        font-size: 30px !important;
+        font-size: 40px !important;
     }
     .topnav{
-        max-height: 65px !important;
+        max-height: fit-content !important;
     }
     h1{
-        font-size: 70px;
+        font-size: 70pt;
     }
     .busesDiv{
-        font-size: 70px;
         display: block;
         width: 90%;
         padding: 50px;
     }
     .bus{
+        font-size: 60pt;
         margin: 15px;
+    }
+    .divider{
+        font-size: 40pt;
+    }
+    .logo{
+        margin: 0;
+        padding: 20px;
     }
   }
 @media screen and (max-width: 800px){

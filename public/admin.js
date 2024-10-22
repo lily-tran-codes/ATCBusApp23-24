@@ -5,6 +5,8 @@ var timeModified = false;
 var notesModified = false;
 var holderBuses = [];
 var routes = {};
+const socket = io()
+
 window.addEventListener('load', createDragDrop);
 // create drag-and-drop divs
 function createDragDrop(){
@@ -252,6 +254,10 @@ async function clearSchedule(){
             }
         })
         location.reload();
+        // emit events to the server
+        if(formatDate(new Date()) == date){
+            socket.emit('clear schedule', date);
+        }
     }
 }
 // function to make bus divs
@@ -274,6 +280,10 @@ async function writeSchedule(date, info){
         },
         body: JSON.stringify(info)
     })
+    // emit events to the server
+    if(formatDate(new Date()) == date){
+        socket.emit('update info', info.notes);
+    }
 }
 // function to save buses
 async function writeDb(buses, date){
@@ -287,6 +297,10 @@ async function writeDb(buses, date){
         },
         body: JSON.stringify(buses)
     })
+    // emit events to the server
+    if(formatDate(new Date()) == date){
+        socket.emit('update schedule', date);
+    }
 }
 // function to get data from server
 async function readDb(date){
