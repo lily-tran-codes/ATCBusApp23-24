@@ -1,8 +1,3 @@
-const socket = io();
-socket.on('updated schedule', () => {
-    getSchedule();
-})
-
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 window.addEventListener('load', getSchedule);
@@ -95,8 +90,4 @@ function searchBus(){
             bus.innerHTML = route;
         }
     }
-}
-// function to reset schedule
-function resetSchedule(){
-    
 }
