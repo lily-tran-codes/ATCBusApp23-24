@@ -1,13 +1,17 @@
-var timeout  = setTimeout(function(){}, 0);
-var inputTimeout = setTimeout(function(){}, 0);
+// var timeout  = setTimeout(function(){}, 0);
+// var inputTimeout = setTimeout(function(){}, 0);
 var buses = [];
-const socket = io()
-
-// creat drag-and-drop divs
+var timeModified = false;
+var notesModified = false;
+var holderBuses = [];
+var routes = {};
+window.addEventListener('load', createDragDrop);
+// create drag-and-drop divs
 function createDragDrop(){
     const datePicker = document.getElementById("datePicker");
     const timePicker = document.getElementById("timePicker");
     const notesInput = document.getElementById("notes");
+    const saveStatus = document.getElementById("saveStatus")
     // add event listener to button to enable/disable
     document.getElementById("editingButton").addEventListener("click", function(){
         // enable sortable by adding draggable class
@@ -30,11 +34,26 @@ function createDragDrop(){
         }
     })
     document.getElementsByClassName("saveButton")[0].addEventListener("click", function(){
+        const holders = document.getElementById('busesHolderSort').children
+        holderBuses = [];
+        routes = {};
+        for(var i = 0; i < holders.length; i++){
+            holderBuses.push(holders[i].textContent)
+        }
         console.log("====buses to save:=====");
         console.log(buses);
         if(buses.length > 0)
             writeDb(buses, datePicker.value);
-        console.log(buses);
+        // save notes and time content
+        if(timeModified || notesModified){
+            const info = {
+                time : timePicker.value,
+                notes : notesInput.value
+            }
+            writeSchedule(datePicker.value, info)
+            timeModified = false;
+            notesModified = false;
+        }
         buses = [];
         document.getElementById("saveStatus").textContent = "Saved!";
     })
@@ -54,6 +73,8 @@ function createDragDrop(){
         console.log("Date changed to: " + scheduleDate);
         // change editing button
         document.getElementById("editingButton").textContent = "Enable Editing";
+        // set holder buses to empty
+        holderBuses = [];
         if(scheduleDate.length > 0){
             // clear buses div
             const busDivs = document.getElementsByClassName("bus");
@@ -68,36 +89,31 @@ function createDragDrop(){
         notesInput.className = '';
     };
     timePicker.onchange = function(){
-        // get release time
-        const releaseTime = timePicker.value;
-        console.log("release time: " + releaseTime);
-        writeSchedule(datePicker.value, releaseTime, 'time');
-        document.getElementById("saveStatus").textContent = "Saved!"
+        saveStatus.content = '';
+        timeModified = true;
     }
     notesInput.addEventListener('keydown', function(){
-        // get notes
-        clearTimeout(inputTimeout);
-        document.getElementById("saveStatus").textContent = "";
-        inputTimeout = setTimeout(function(){
-            document.getElementById("saveStatus").textContent = "Saved!";
-            // save buses' positions to db
-            console.log(notesInput.value);
-            writeSchedule(datePicker.value, notesInput.value, 'notes');
-        }, 1000)
+        // clear save status
+        if (saveStatus.textContent != ''){
+            saveStatus.textContent = '';
+        }
+        if (!notesModified){
+            notesModified = true;
+        }
     })
     // create drag and drop boards
     const sections = document.getElementsByClassName("section");
     for(var i = 0; i < sections.length; i++){
-        var sort = true;
-        if(i == 0)
-            sort = false;
         new Sortable(sections[i], {
             group: "shared",
-            sort: sort,
+            sort: i != 0,
             swapThreshold: 2,
             animation: 150,
             filter: ".inactive",
             draggable: ".drag",
+            scroll: true,
+            scrollSensitivity: 100,
+            
             // ***REMOVED*** prevent bus divs to be put back in buses holder
             // onMove: function onMove(ev){
             //     if(ev.related && ev.related.classList.contains('holder') || ev.related.parentNode.classList.contains('holder')){
@@ -108,80 +124,64 @@ function createDragDrop(){
             onEnd: function save(ev){
                 // check if location is different
                 if(ev.to != ev.from || ev.newIndex != ev.oldIndex){
-                    clearTimeout(timeout);
-                    document.getElementById("saveStatus").textContent = "";
-                    const group = ev.to.parentNode.getAttribute("name");
-                    const section = ev.to.className.substring(ev.to.className.indexOf("section ")+"section ".length, ev.to.className.length);
+                    // change save status to unsaved (blank)
+                    document.getElementById('saveStatus').textContent = '';
+                    const group = ev.to.parentNode.getAttribute('name');
+                    const section = ev.to.className.substring(ev.to.className.indexOf('section ') + 'section '.length, ev.to.className.length)
                     var sectionList = ev.to.children;
                     const index = ev.newIndex;
-                    console.log(sectionList);
+                    
+                    console.log(ev)
+                    console.log('group: ', group);
+                    console.log('section: ', section);
+                    console.log('new index: ', index)
+                    
+                    // get all buses in the section just updated
+                    if(ev.to.parentNode.getAttribute('name') != 'Holder'){
                         for(var i = index; i < sectionList.length; i++){
                             console.log(Array.from(sectionList)[i]);
                             const route = sectionList[i].textContent;
-                            const position = [section, i].join("-");
-                            var routeFound = false;
-                            for(var j = 0; j < buses.length; j++){
-                                console.log(buses[j]);
-                                if(buses[j].route == route){
-                                    buses[j].position = position;
-                                    buses[j].group = group;
-                                    routeFound = true;
-                                    break;
-                                }
+                            const position = [section, i].join('-');
+                            // check if buses holder contain the bus, if yes, insert bus, if not, update bus
+                            var method = holderBuses.includes(route) ? 'insert' : 'update'
+    
+                            console.log('route: ', route);
+                            console.log('position: ', position);
+                            console.log('method: ', method)
+                            console.log('holder buses: ')
+                            console.log(holderBuses);
+
+                            console.log('routes list:')
+                            console.log(routes)
+
+                            const bus = {
+                                route : route,
+                                group : group,
+                                position: position,
+                                method: method
                             }
-                            if (!routeFound){
-                                console.log("added route");
-                                buses.push({
-                                    route : route,
-                                    position : position,
-                                    group : group,
-                                });
-                            }
-                        }
-                    console.log(buses);
-                    if(ev.from != ev.to){
-                        console.log("Old parent node: ");
-                        var sectionList = ev.from.children;
-                        const group = ev.from.parentNode.getAttribute("name");
-                        const section = ev.from.className.split(" ")[1];
-                        console.log(ev.from);
-                        console.log("old index: " + ev.oldIndex);
-                        for(var i = ev.oldIndex + 1; i < sectionList.length; i++){
-                            const route = group != sectionList[i].textContent;
-                            const position = group != [section, i].join("-");
-                            console.log("buses.length: " + buses.length);
-                            var routeFound = false;
-                            for(var j = 0; j < buses.length; j++){
-                                console.log(buses[j]);
-                                if(buses[j].route == route){
-                                    console.log("updated route");
-                                    buses[j].position = position;
-                                    buses[j].group = group;
-                                    routeFound = true;
-                                    console.log(buses);
-                                    break;
-                                }
-                            }
-                            if (!routeFound){
-                                console.log("added route");
-                                buses.push({
-                                    route : route,
-                                    position : position,
-                                    group : group,
-                                });
+                            // find bus in list
+                            if(routes[route] == undefined){
+                                console.log(`route ${route} not in list yet`)
+                                routes[route] = buses.length
+                                buses.push(bus);
+                                console.log('buses: ', buses)
+                            } else {
+                                console.log(`replace bus ${route} in list`)
+                                // change bus info in list
+                                buses[routes[route]] = bus;
                             }
                         }
-                        console.log(buses);
+                    } else {
+                        console.log('is holder')
+                        console.log('holder route: ', ev.item.textContent)
+                        const bus = {
+                            route : ev.item.textContent,
+                            method : 'delete'
+                        }
+                        buses.push(bus);
+                        console.log('buses: ', buses)
                     }
-                    timeout = setTimeout(function(){
-                        document.getElementById("saveStatus").textContent = "Saved!";
-                        // save buses' positions to db
-                        if(buses.length > 0){
-                            writeDb(buses, datePicker.value);
-                        }
-                        console.log(buses);
-                        buses = [];
-                    }, 1000)
                 }
             },
         })
@@ -202,7 +202,6 @@ function formatDate(date){
 // function to display bus numbers on screen
 function displayBuses(buses, schedules){
     schedules.forEach(bus => {
-        console.log(bus.bus_route);
         var className = "bus";
         if(bus.active == false){
             className = "inactive bus";
@@ -211,8 +210,6 @@ function displayBuses(buses, schedules){
         }
         const busDiv = createBus(bus.bus_route, className);
         const group = document.getElementById(bus.bus_group + "Sort");
-        console.log(bus.bus_position);
-        console.log(bus.bus_group);
         if(bus.bus_group != "NHY"){
             const section = group.getElementsByClassName(bus.bus_position.split("-")[0])[0];
             section.appendChild(busDiv);
@@ -222,10 +219,10 @@ function displayBuses(buses, schedules){
     })
     // display buses that are not yet placed
     const busesHolder = document.getElementById("busesHolder").getElementsByClassName("section")[0]; // add to section div inside the holder div
-    console.log("buses:");
-    console.log(buses);
     buses.forEach((bus) => {
         busesHolder.appendChild(createBus(bus.bus_route));
+        console.log('bus holder route ', bus)
+        holderBuses.push(bus.bus_route)
     })
     
 }
@@ -256,7 +253,7 @@ function createBus(route, className="bus"){
     return busDiv;
 }
 // function to save schedule's info
-async function writeSchedule(date, info, type){
+async function writeSchedule(date, info){
     await fetch("/db?" + new URLSearchParams({
         method: "schedule",
         date: date,
@@ -265,7 +262,7 @@ async function writeSchedule(date, info, type){
         headers: {
             "Content-type":"application/json"
         },
-        body: JSON.stringify({info : info, type : type})
+        body: JSON.stringify(info)
     })
 }
 // function to save buses
@@ -280,10 +277,6 @@ async function writeDb(buses, date){
         },
         body: JSON.stringify(buses)
     })
-    // emit events to the server
-    if(formatDate(new Date()) == date){
-        socket.emit('update schedule', date);
-    }
 }
 // function to get data from server
 async function readDb(date){

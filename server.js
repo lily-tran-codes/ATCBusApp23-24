@@ -1,39 +1,28 @@
 // import express package
 const express = require('express');
 const session = require('express-session');
-const bodyParser = require('body-parser')
-const {createServer} = require('http')
+const bodyParser = require('body-parser');
+const { closeAll } = require('./pool-manager')
 require('dotenv').config() // require dotenv so nodejs can recognize .env file for environmental variables
-// socket.io for live changes
-const {Server} = require('socket.io')
 
-// initialize app to handle functions
 const app = express();
-// server that get supplied from the app
-const server = createServer(app);
-// initialize instance of socket.io
-const io = new Server(server);
 const port = process.env.PORT;
 const db = require('./db');
 
-io.on('connection', (socket) => {
-    console.log('user logged in')
-    socket.on('update schedule', (date) => {
-        console.log('schedule updated for:');
-        console.log(date)
-        // broadcast for all sockets
-        io.emit('updated schedule')
-    })
-})
-
 // set server to port
-server.listen(port, function (err) {
+app.listen(port, function (err) {
     if (err)
         console.log(err);
     console.log("Server listening on PORT", port);
-    console.log("Using development version")
+    console.log("Using latest version")
 });
 
+// close db pools before exit (this is not being triggered by Ctrl + C)
+process.on('beforeExit', async () => {
+    console.log('Closing all connections...')
+    await closeAll();
+    process.exit(0);
+})
 // access static files (js and css files)
 // ! IMPORTANT ALL FILES PUT IN PUBLIC DIRECTORY ARE ACCESSIBLE FROM THE FILES IN THE ROOT DIRECTORY WITHOUT SPECIFYING '/public/file', just '/file'
 app.use(express.static('public'));
@@ -94,8 +83,6 @@ app.get('/db', (req, res) => {
 });
 app.post('/db', (req, res) => {
     const method = req.query.method
-    console.log(req.body.type);
-    console.log("req.body:")
     console.log(req.body);
     if(method == 'add')
         db.addBus(req.body);

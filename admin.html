@@ -23,14 +23,12 @@
                 <p>Release Time:</p>
                 <input type="time" id="timePicker" disabled>
             </div>
-    
+            
             <br><button id="editingButton">Enable Editing</button>
             <button class="saveButton">Save</button>
             <button class="clearButton" onclick="clearSchedule()">Clear</button>
             <p id="saveStatus"></p>
-            <h2 style="margin-top:30px;margin-bottom:0px;">Notes</h2>
-            <textarea disabled id="notes" rows="4" cols="150" style="min-height:50px;" placeholder="Enter bus changes and notes"></textarea>
-            <br>
+        </div>
         <!--where unscheduled buses go-->
         <div class="busesDiv" id="busesHolder" name="Holder">
             <h1>Buses</h1>
@@ -85,6 +83,8 @@
                     <!--bus divs go here-->
                 </div>
             </div>
+            <h2 style="margin-top:30px;margin-bottom:0px;">Notes</h2>
+            <textarea disabled id="notes" rows="4" cols="150" style="max-width:100%; min-width:100%; min-height:50px;" placeholder="Enter bus changes and notes"></textarea>
         </div>
         <!-- <script>createDragDrop();</script> -->
     </body>

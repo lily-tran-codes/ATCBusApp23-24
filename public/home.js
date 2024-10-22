@@ -4,6 +4,11 @@ socket.on('updated schedule', () => {
 })
 
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+window.addEventListener('load', getSchedule);
+window.setTimeout(function(){
+    window.location.reload();
+}, 60000)
 function formatDate(date){
     var today = new Date(date),
         month = '' + (today.getMonth()+1),
@@ -28,6 +33,7 @@ async function getSchedule(){
         date: date,
         user: 'student'
     }));
+    console.log(response)
     const schedule = await response.json();
     console.log(schedule);
     // check if schedule is empty

@@ -317,7 +317,6 @@ input:focus{
 }
 #notes{
     padding: 0px;
-    max-width: 30% !important;
 }
 
 .rowName{
