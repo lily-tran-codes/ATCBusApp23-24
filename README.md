@@ -8,12 +8,11 @@
 >[!NOTE]
 >Only the schedule from today will be shown, you cannot see schedules from other days.
 ---
-# Development & Server Setup
-## Requirements
+# Requirements
 - Nodejs
 - npm
 - SQL Server
-## Install bus app on server with Docker (skip if you're developing and not deploying the application)
+# Deploying & Hosting with Docker (for testing and production purposes only)
 ## Section 1: Database
 
 >[!NOTE]
@@ -41,7 +40,7 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 ```
-### Section 2: Required files
+## Section 2: Required files
 1. Download [compose.yaml](compose.yaml)
 2. .env file (from email)
 3. Put them in a folder together
@@ -64,9 +63,11 @@ docker-compose up
         password: busAdmin
 4. Change credentials after logging in by going to the Accounts tab on the navigation bar up top.
 ![Account](Documentation/images/account.png)
-## Setting up local SQL server for development
+# Development Setup
 >[!NOTE]
 > Local admin rights required on computer in order to install SQL server
+
+## SQL Server Setup
 ### Windows
 #### Installation
 >[!NOTE]
@@ -99,7 +100,7 @@ docker-compose up
 4. Open terminal in the folder where the docker-compose file is located
 5. Run `docker-compose up -d`
 6. The process should now show up on the list of containers in Docker Desktop
-# Setup project's folder
+## Setup project's folder
 1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
 2. Clone the repo
     - If you use git, open Cmd Prompt/Terminal in the folder that you want to store the project, run `git clone https://github.com/lily10806/ATCBusApp.git`.
@@ -148,5 +149,5 @@ docker-compose up
     - Pull origin to get changes from remote branch to local branch
     ![pull origin](Documentation/images/pull-origin.png)
 # Roadmap
-- [ ] LDAP
+- [ ] LDAP or OAuth authentication for admin
 - [ ] Horizontal slide view on mobile
