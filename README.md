@@ -92,14 +92,31 @@ docker-compose up
 4. Navigate to SQL Server Services and restart SQL Server that is currently running
 5. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
 6. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
-### MacOS
+### MacOS & Linux
 #### SQL Server Installation with Docker
 1. Install Docker Desktop and launch it
 2. Download [docker-compose file](Documentation/docker-compose.yaml)
 3. Change SA_PASSWORD if you want to change the default password for SA account
-4. Open terminal in the folder where the docker-compose file is located
-5. Run `docker-compose up -d`
-6. The process should now show up on the list of containers in Docker Desktop
+>[!NOTE]
+>If you're on Linux, add user attribute to the yaml file with the username that owns the directory where the volume is mounted
+``` docker-compose
+services:
+  sqlserver:
+    user: root
+    image: mcr.microsoft.com/mssql/server
+    container_name: MsSqlServer
+    environment:
+     - ACCEPT_EULA=Y
+     - SA_PASSWORD=Room#176
+    ports:
+     - "1433:1433"
+    volumes:
+     - ./mssql-data:/var/opt/mssql/data
+
+```
+5. Open terminal in the folder where the docker-compose file is located
+6. Run `docker-compose up -d`
+7. The process should now show up on the list of containers in Docker Desktop
 ## Setup project's folder
 1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
 2. Clone the repo
