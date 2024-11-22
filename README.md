@@ -66,34 +66,19 @@ docker-compose up
 # Development Setup
 >[!NOTE]
 > Local admin rights required on computer in order to install SQL server
-
 ## SQL Server Setup
-### Windows
-#### Installation
+### Installation
 >[!NOTE]
->If you're using MacOS, you will have to install SQL Server with Docker, go to [this section](#macos)
+>If you're using MacOS, you will have to install SQL Server with Docker, go to [this section](#macos-and-linux)
+#### Windows
 1. Install SQL Server Express [here](https://www.microsoft.com/en-us/download/details.aspx?id=55994)
 2. Run the installer and choose the custom option
 3. Install and choose "New SQL Server stand-alone installation"
 4. Go through installer until the Instance Configuration section, rename the instance and change its ID if desired, default is SQLEXPRESS
 5. For Database Engine Configuration, choose Mixed Mode and set up sa account
-6. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (MacOS not supported), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall) (most similar to SSMS but supports MacOS), or any other DBMS interface of your liking that supports SQL Server
 >[!IMPORTANT]
->On SSMS, the hostname is localhost\SQLEXPRESS, but on other DBMS interfaces, the hostname might be only localhost instead.
-#### Setup
-1. Open Sql Server Configuration Manager
->[!NOTE]
->If SQL Server Configuration Manager is not found, follow the steps in this [link](https://learn.microsoft.com/en-us/answers/questions/166724/sql-server-configuration-manager-not-showing-in-wi)
-1. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
-![Enable SQL Server Browser](Documentation/images/enable-sql-browser.png)
-1. Right-click SQL Server Browser and select Start
-2. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
-3. Right-click and enable TCP/IP
-4. Navigate to SQL Server Services and restart SQL Server that is currently running
-5. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation
-6. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
-### MacOS & Linux
-#### SQL Server Installation with Docker
+>On SSMS, the hostname is localhost\SQLEXPRESS, but on other DBMS interfaces, the hostname might be only localhost instead. The default port is 1433
+#### MacOS and Linux
 1. Install Docker Desktop and launch it
 2. Download [docker-compose file](Documentation/docker-compose.yaml)
 3. Change SA_PASSWORD if you want to change the default password for SA account
@@ -102,7 +87,7 @@ docker-compose up
 ``` docker-compose
 services:
   sqlserver:
-    user: root
+    user: root # add this line
     image: mcr.microsoft.com/mssql/server
     container_name: MsSqlServer
     environment:
@@ -112,11 +97,28 @@ services:
      - "1433:1433"
     volumes:
      - ./mssql-data:/var/opt/mssql/data
-
 ```
 5. Open terminal in the folder where the docker-compose file is located
 6. Run `docker-compose up -d`
-7. The process should now show up on the list of containers in Docker Desktop
+7. The process should now show up on the list of containers in Docker Desktop or if you're on Linux run `sudo docker ps` to show a list of running containers
+8. Access
+### Setup
+>[!NOTE]
+>Configuration with SQL Server Configuration Manager is only relevant to Windows installation
+1. Open Sql Server Configuration Manager
+>[!NOTE]
+>If SQL Server Configuration Manager is not found, follow the steps in this [link](https://learn.microsoft.com/en-us/answers/questions/166724/sql-server-configuration-manager-not-showing-in-wi)
+1. Enable SQL Server Browser in the SQL Server Services section by Right-click to Properties, Service, and change Start Mode to Automatic. Apply changes.
+![Enable SQL Server Browser](Documentation/images/enable-sql-browser.png)
+1. Right-click SQL Server Browser and select Start
+2. Expand SQL Server Network Configuration and select Protocols for [Instance name] (default is SQLEXPRESS)
+3. Right-click and enable TCP/IP
+4. Navigate to SQL Server Services and restart SQL Server that is currently running
+### Access & Initialize database
+1. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (MacOS not supported), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall) (most similar to SSMS but supports MacOS), or any other DBMS interface of your liking that supports SQL Server
+2. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation. If you did not specify any other usernames, it would be 'sa' and whatever password you set
+3. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+
 ## Setup project's folder
 1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
 2. Clone the repo
@@ -166,5 +168,6 @@ services:
     - Pull origin to get changes from remote branch to local branch
     ![pull origin](Documentation/images/pull-origin.png)
 # Roadmap
-- [ ] LDAP or OAuth authentication for admin
+- [ ] LDAP or OAuth authentication for admin and remove body-parser module
 - [ ] Horizontal slide view on mobile
+- [ ] Revamp drag-drop functionality to use Muuri library
