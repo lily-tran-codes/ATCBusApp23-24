@@ -115,9 +115,12 @@ services:
 3. Right-click and enable TCP/IP
 4. Navigate to SQL Server Services and restart SQL Server that is currently running
 ### Access & Initialize database
-1. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (MacOS not supported), [Beekeeper Studio (Community Edition)](https://www.beekeeperstudio.io/get-community), or [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall) (most similar to SSMS but supports MacOS), or any other DBMS interface of your liking that supports SQL Server
-2. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation. If you did not specify any other usernames, it would be 'sa' and whatever password you set
-3. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
+1. Install DBMS that supports SQL Server. Some options include:
+	- [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (only supports Windows)
+	- [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall) (most similar to SSMS but supports MacOS & Linux)
+ 	- [MSSQL extension for VSCode](https://learn.microsoft.com/en-us/sql/tools/visual-studio-code-extensions/mssql/connect-database-visual-studio-code?view=sql-server-ver16) (all systems that can run VSCode)
+3. Connect to server on SQL Server Management Studio with either Windows authentication or sa credentials made during server installation. If you did not specify any other usernames, it would be 'sa' and whatever password you set
+4. Select New Query and execute the script from [scripts file](scripts.txt) to create database and tables
 
 ## Setup project's folder
 1. Install git [here](https://git-scm.com/downloads) or Github Desktop [here](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) if you want to use the interface instead
