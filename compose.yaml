@@ -1,10 +1,9 @@
-version: '1.3'
 services:
-  web:
-    build: .
+  busapp:
+    restart: always
+    container_name: busapp
     ports:
     - ${PORTS}
-    image: lily108/busapp:1.3
+    image: lily108/busapp:latest
     env_file:
       - .env
-    restart: always
