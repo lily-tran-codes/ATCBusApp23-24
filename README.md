@@ -171,6 +171,6 @@ services:
     - Pull origin to get changes from remote branch to local branch
     ![pull origin](Documentation/images/pull-origin.png)
 # Roadmap
-- [ ] LDAP or OAuth authentication for admin and remove body-parser module
+- [ ] LDAP or OAuth authentication for admin and remove body-parser module (deprecated)
 - [ ] Horizontal slide view on mobile
 - [ ] Revamp drag-drop functionality to use Muuri library
