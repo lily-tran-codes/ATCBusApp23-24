@@ -14,28 +14,64 @@
 - SQL Server
 # Deploying & Hosting with Docker (for testing and production purposes only)
 ## Section 1: Database
-
->[!NOTE]
->Create a table called Accounts (drop table first if Accounts already exists) with username and password columns with the script below:
+### Buses table
 ```sql
-USE [BusDismissal]
-GO
-
-/****** Object:  Table [dbo].[Accounts]    Script Date: 4/23/2024 5:45:35 PM ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-/* Uncomment the DROP TABLE below if Accounts already exist */
-/* DROP TABLE Accounts; */
-CREATE TABLE [dbo].[Accounts](
+CREATE TABLE [dbo].[Buses](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[username] [varchar](255) NULL,
-	[password] [varchar](255) NULL,
+	[bus_route] [varchar](10) NULL,
+	[update_date] [date] NULL,
+	[active] [bit] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+```
+### Scheduled_Buses table
+```sql
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Scheduled_Buses](
+	[bus_id] [int] NOT NULL,
+	[schedule_date] [date] NOT NULL,
+	[bus_group] [varchar](10) NULL,
+	[bus_position] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[bus_id] ASC,
+	[schedule_date] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Scheduled_Buses]  WITH CHECK ADD FOREIGN KEY([bus_id])
+REFERENCES [dbo].[Buses] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Scheduled_Buses]  WITH CHECK ADD FOREIGN KEY([schedule_date])
+REFERENCES [dbo].[Schedules] ([schedule_date])
+ON DELETE CASCADE
+GO
+```
+### Schedules table
+```sql
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Schedules](
+	[schedule_date] [date] NOT NULL,
+	[notes] [varchar](128) NULL,
+	[release_time] [time](0) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[schedule_date] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
