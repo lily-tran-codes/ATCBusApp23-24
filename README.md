@@ -116,7 +116,7 @@ docker-compose up
 >On SSMS, the hostname is localhost\SQLEXPRESS, but on other DBMS interfaces, the hostname might be only localhost instead. The default port is 1433
 #### MacOS and Linux
 1. Install Docker Desktop and launch it
-2. Download [docker-compose file](Documentation/docker-compose.yaml)
+2. Download [docker-compose file](Documentation/mssql.docker-compose.yaml)
 3. Change SA_PASSWORD if you want to change the default password for SA account
 >[!NOTE]
 >If you're on Linux, add user attribute to the yaml file with the username that owns the directory where the volume is mounted
