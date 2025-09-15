@@ -273,109 +273,7 @@ async function updateSchedule(buses, date){
         console.log('An error has occured: ', err)
     }
 }
-// async function updateSchedule(buses, date){
-//     try{
-//         const pool = await get('admin');
-//         await pool.connect();
-//         const res = await pool.request()
-//         .input('date', sql.Date, date)
-//         .query('USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = @date;')
-//         if(res.recordset.length == 0){
-//             await pool.request()
-//             .input('date', sql.Date, date)
-//             .query('INSERT INTO Schedules(schedule_date) VALUES (@date);')
-//         }
-//         buses.forEach(async function(bus){
-//             const route = bus.route;
-//             const group = bus.group;
-//             const position = bus.position;
-//             if(group != 'Holder'){
-//                 console.log('is not Holder')
-//                 var exists = await pool.request()
-//                 .input('route', sql.VarChar, route)
-//                 .input('date', sql.Date, date)
-//                 .query('SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1) AND schedule_date = @date')
-//                 if(exists.recordset.length == 0){
-//                     console.log("need to create a new record");
-//                     console.log('date: ', date)
-//                     await pool.request()
-//                     .input('date', sql.Date, date)
-//                     .input('route', sql.VarChar, route)
-//                     .input('group', sql.VarChar, group)
-//                     .input('position', sql.VarChar, position)
-//                     .query('INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position)\
-//                         VALUES ( \
-//                         (SELECT id FROM Buses WHERE bus_route = @route AND active = 1), \
-//                         @date, @group, @position);')
-//                     const req = pool.request();
-//                 } else {
-//                     await pool.request()
-//                     .input('route', sql.VarChar, route)
-//                     .input('group', sql.VarChar, group)
-//                     .input('position', sql.VarChar, position)
-//                     .query('UPDATE Scheduled_Buses \
-//                         SET bus_group = @group, bus_position = @position \
-//                         WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
-//                 }
-//             } else if(route != true){
-//                 console.log('is holder')
-//                 await pool.request()
-//                 .input('date', sql.Date, date)
-//                 .input('route', sql.VarChar, route)
-//                 .query('DELETE FROM Scheduled_Buses WHERE schedule_date= @date \
-//                     AND bus_id=(SELECT id FROM Buses WHERE bus_route = @route AND active = 1)')
-//             }
-//         })
-//         console.log('SAVED')
-//     } catch(err){
-//         // handles errors
-//        console.log("An error has occured: ", err);
-//     }
-// }
-// async function updateSchedule(buses, date){
-//     try{
-//         await sql.connect(adminConfig)
-//         // query results from db
-//         var res = await sql.query(`USE BusDismissal; SELECT * FROM Schedules WHERE schedule_date = '${date}';`);
-//         if(res.recordset.length == 0)
-//             await sql.query(`USE BusDismissal; INSERT INTO Schedules(schedule_date) VALUES ('${date}');`);
-//         buses.forEach(async function(bus){
-//             await sql.connect(adminConfig);
-//             console.log(bus);
-//             const route = bus.route;
-//             const group = bus.group;
-//             const position = bus.position;
-//             if(group != 'Holder'){
-//                 console.log('not holder')
-//                 var exists = await sql.query(`USE BusDismissal; SELECT * FROM Scheduled_Buses WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1) AND schedule_date = '${date}'`);
-//                 if(exists.recordset.length == 0){
-//                     console.log("need to create a new record!");
-//                     await sql.query(`USE BusDismissal; INSERT INTO Scheduled_Buses(bus_id, schedule_date, bus_group, bus_position) \
-//                     VALUES( \
-//                         (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1),
-//                         '${date}',
-//                         '${group}',
-//                         '${position}'
-//                     );\n`);
-//                 } else {
-//                     await sql.query(` USE BusDismissal; UPDATE Scheduled_Buses \
-//                     SET bus_group = '${group}', bus_position = '${position}' \
-//                     WHERE bus_id = (SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1);\n`);
-//                 }
-//             } else {
-//                 console.log('route: ', route)
-//                 await sql.query(`USE BusDismissal; DELETE FROM Scheduled_Buses WHERE schedule_date='${date}' AND bus_id=(SELECT id FROM Buses WHERE bus_route = '${route}' AND active = 1)`);
-//             }
-//         })
-//         console.log("SAVED");
-//    } catch (err) {
-//        // handles errors
-//        console.log("An error has occured: ", err);
-//    } /*finally {
-//        // close connection to db
-//        conn.close();
-//    }*/
-// }
+
 // function to login user
 async function login(creds){
     try{
@@ -463,27 +361,6 @@ async function getStudentSchedule(date){
        console.log("An error has occured: ", err);
     }
 }
-
-
-// async function getStudentSchedule(date){
-//     try{
-//         await sql.connect(studentConfig);
-//         const schedule = await sql.query(`USE BusDismissal; SELECT b.bus_route, sb.bus_group, sb.bus_position \
-//         FROM Scheduled_Buses sb, Buses b \
-//         WHERE sb.bus_id = b.id \
-//         AND sb.schedule_date = '${date}';`)
-//         console.log(schedule.recordset);
-//         const notes = await sql.query(`USE BusDismissal; SELECT notes FROM Schedules WHERE schedule_date='${date}';`);
-//         return {schedule : schedule.recordset, notes : notes.recordset}
-//    } catch (err) {
-//        // handles errors
-//        console.log("An error has occured: ", err);
-//    } 
-// //    finally {
-// //        // close connection to db
-// //        conn.close();
-// //    }
-// }
 
 // function to get admin account
 async function getAccount(){
