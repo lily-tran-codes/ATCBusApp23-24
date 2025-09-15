@@ -151,7 +151,7 @@ app.post('/db', (req, res) => {
     if(method == 'schedule')
         db.writeSchedule(req.query.date, req.body);
     if(method == 'clear')
-        db.clearSchedule(req.query.date)
+        db.clearSchedule(req.query.date);
     res.end();
 })
 app.delete('/db', (req, res) => {

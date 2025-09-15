@@ -42,16 +42,7 @@ function displayBuses(buses){
         // append bus to table
         input.value = "";
     })
-    document.getElementById("newListButton").addEventListener("click", function(){
-        if(confirm("Are you sure you want to archive this list and create a new one?")){
-            console.log("yes");
-            const bus = {method: 'archive'}
-            writeDb(bus, 'archive');
-            location.reload();
-        } else {
-            console.log("no");
-        }
-    })
+    document.getElementById("newListButton").addEventListener("click", archiveBuses)
 }
 
 // function to add bus to table
@@ -159,21 +150,18 @@ function editBus(button){
         this.removeEventListener("blur", cancel);
         this.blur();
     });
-    // busElement.addEventListener("blur", function cancel(){
-    //     this.addEventListener("keypress", function(event){
-    //         if(event.key === "Enter"){
-    //             console.log("enter in cancel");
-    //         }
-    //     })
-    //     if(this != document.activeElement){
-    //     console.log("cancel")
-    //     this.setAttribute("readonly", "true");
-    //     this.setAttribute("onfocus", "this.blur()");
-    //     this.value = initRoute;
-    //     button.click();
-    //     this.removeEventListener("blur", cancel);
-    //     }
-    // })
+}
+
+// function to archive buses list
+async function archiveBuses(){
+    if(confirm("Are you sure you want to archive this list and create a new one?")){
+        console.log("yes");
+        const bus = {method: 'archive'}
+        await writeDb(bus, 'archive');
+        window.location.reload();
+    } else {
+        console.log("no");
+    }
 }
 
 // function to reset edit button and input box to default
@@ -250,7 +238,7 @@ async function readDb(){
 }
 // function to send data to db to save
 async function writeDb(bus, method){
-    const data = await fetch("/db?" + new URLSearchParams({
+    await fetch("/db?" + new URLSearchParams({
         method: method
     }), {
         method: "POST",

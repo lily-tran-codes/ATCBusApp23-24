@@ -187,7 +187,7 @@ async function editBus(bus){
 }
 
 async function archiveList(){
-    console.log("archive")
+    console.log("archive");
     try{
         const pool = await get('admin');
         await pool.connect();
